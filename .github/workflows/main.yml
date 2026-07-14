@@ -1,4 +1,4 @@
-name: Test Action
+name: New Test
 
 on:
   workflow_dispatch:
@@ -9,5 +9,6 @@ jobs:
 
     steps:
       - name: Test
-        run: echo "Hello GitHub Actions"
-        
+        run: |
+          echo "我的AI情报系统开始测试"
+          python --version
