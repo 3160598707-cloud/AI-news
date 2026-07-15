@@ -13,6 +13,8 @@ export default function EventsPage() {
   const [filter, setFilter] = useState('全部')
   const [loading, setLoading] = useState(true)
   const [count, setCount] = useState(0)
+  const [query, setQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<any[] | null>(null)
 
   const loadEvents = async () => {
     setLoading(true)
@@ -21,22 +23,49 @@ export default function EventsPage() {
       const data = await res.json()
       setEvents(data.events || [])
       setCount((data.events || []).length)
-    } catch { /* ignore */ }
-    finally { setLoading(false) }
+    } catch { } finally { setLoading(false) }
   }
 
   useEffect(() => { loadEvents() }, [])
 
-  const filtered = filter === '全部'
-    ? events
+  // Debounced search
+  useEffect(() => {
+    if (!query.trim()) { setSearchResults(null); return }
+    const id = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        const data = await res.json()
+        setSearchResults(data.results || [])
+      } catch { setSearchResults([]) }
+    }, 300)
+    return () => clearTimeout(id)
+  }, [query])
+
+  const displayEvents = searchResults !== null ? searchResults
+    : filter === '全部' ? events
     : events.filter((e: any) => e.category === filter)
+
+  const displayCount = searchResults !== null ? searchResults.length : count
 
   return (
     <>
       <Head><title>事件列表 — AI World Monitor</title></Head>
       <header className="hero">
         <h1>📡 全球事件</h1>
-        <p>共 {count} 个事件 · 点击分类筛选</p>
+        <p>共 {displayCount} 个事件 · 搜索或筛选</p>
+        <div className="search-bar">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="搜索事件、国家、城市..."
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+          />
+          {query && (
+            <button className="search-clear" onClick={() => setQuery('')}>✕</button>
+          )}
+        </div>
       </header>
 
       <div className="filter-bar">
@@ -58,7 +87,7 @@ export default function EventsPage() {
       {loading && <p className="loading">⏳ 加载中...</p>}
 
       <div className="events-grid">
-        {filtered.map((ev: any, i: number) => (
+        {displayEvents.map((ev: any, i: number) => (
           <motion.div
             key={ev.id}
             className="event-item"
@@ -76,7 +105,7 @@ export default function EventsPage() {
             </div>
           </motion.div>
         ))}
-        {!loading && filtered.length === 0 && (
+        {!loading && displayEvents.length === 0 && (
           <p className="muted" style={{ textAlign: 'center', gridColumn: '1 / -1' }}>
             暂无 {filter === '全部' ? '事件' : filter + ' 类事件'}
           </p>

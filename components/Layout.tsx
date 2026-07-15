@@ -38,6 +38,20 @@ export default function Layout({ children }: { children: ReactNode }) {
         </div>
       </nav>
       <main className="main-content">{children}</main>
+
+      {/* Mobile bottom nav */}
+      <nav className="mobile-nav">
+        <div className="mobile-nav-inner">
+          {navItems.map(item => (
+            <Link key={item.href} href={item.href}
+              className={`mobile-nav-link ${router.pathname === item.href ? 'active' : ''}`}>
+              <span className="mobile-nav-icon">{item.label.slice(0, 2)}</span>
+              <span>{item.title}</span>
+            </Link>
+          ))}
+        </div>
+      </nav>
+
       <footer className="footer">
         <span>AI World Monitor · {new Date().getFullYear()}</span>
         <span className="footer-dot">·</span>
