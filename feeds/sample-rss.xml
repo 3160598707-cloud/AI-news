@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>AI-news Local Sample Feed</title>
+    <description>Sample RSS feed for local development.</description>
+    <link>http://localhost/</link>
+    <item>
+      <title>本地示例事件：AI 战略发布</title>
+      <description>国内发布新的 AI 战略，数据采集已就绪。</description>
+      <category>科技</category>
+      <dc:creator>本地</dc:creator>
+    </item>
+    <item>
+      <title>本地示例事件：能源价格跟进</title>
+      <description>本地示例能源事件，用于测试系统。</description>
+      <category>能源</category>
+      <dc:creator>示例</dc:creator>
+    </item>
+    <item>
+      <title>本地示例事件：国际关系动态</title>
+      <description>测试用的国际关系事件数据。</description>
+      <category>政治</category>
+      <dc:creator>模拟</dc:creator>
+    </item>
+  </channel>
+</rss>
