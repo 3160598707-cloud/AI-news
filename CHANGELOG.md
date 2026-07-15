@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.4.0 — 2026-07-15
+
+### Added
+- `/daily` 日报页面（Markdown 渲染 + 加载/错误状态）
+- 首页 AI 态势分析卡片 +「刷新分析」按钮
+- 页面导航（首页 ↔ 日报）
+- 响应式卡片布局（`summary-grid`）
+
+### Changed
+- `pages/index.tsx` 重构：动态加载分析、模块卡片
+- `styles/globals.css` 新增日报样式、按钮、响应式
+
 ## 0.3.0 — 2026-07-15
 
 ### Added

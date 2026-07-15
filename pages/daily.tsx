@@ -1,0 +1,69 @@
+import { useState, useEffect } from 'react'
+import Head from 'next/head'
+
+/** 极简 Markdown → HTML：支持 ## ### ** - 列表 */
+function md2html(md: string): string {
+  return md
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^\- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<[huo])(.+)$/gm, '<p>$1</p>')
+}
+
+export default function DailyPage() {
+  const [report, setReport] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/daily-report')
+        const data = await res.json()
+        if (data.report) {
+          setReport(md2html(data.report))
+        } else if (data.error) {
+          setError(data.error)
+        }
+      } catch (e: any) {
+        setError(e?.message || '加载失败')
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [])
+
+  return (
+    <>
+      <Head><title>AI 日报 — AI World Monitor</title></Head>
+      <main>
+        <header className="hero">
+          <h1>📰 AI 日报</h1>
+          <p>由 DeepSeek 自动生成 · 基于实时事件分析</p>
+        </header>
+
+        <div className="report-container">
+          {loading && <p className="loading">⏳ 正在生成 AI 日报...</p>}
+          {error && <p className="error">❌ {error}</p>}
+          {report && (
+            <article
+              className="report-content"
+              dangerouslySetInnerHTML={{ __html: report }}
+            />
+          )}
+        </div>
+
+        <nav className="nav-links">
+          <a href="/">← 返回地球视图</a>
+        </nav>
+      </main>
+    </>
+  )
+}

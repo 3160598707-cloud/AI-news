@@ -101,3 +101,118 @@ main {
 .summary li {
   margin-bottom: 0.75rem;
 }
+
+/* ---- 首页增强 ---- */
+.hero-nav {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn:hover { background: #1d4ed8; }
+
+.btn-secondary {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.btn-secondary:hover { background: rgba(255,255,255,0.14); }
+
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.summary-grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+.card {
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+}
+
+.card h2 { margin: 0 0 1rem; font-size: 1.2rem; }
+
+.analysis-text {
+  line-height: 1.8;
+  color: #cbd5e1;
+  white-space: pre-wrap;
+}
+
+.muted { color: #64748b; }
+
+/* ---- 日报页 ---- */
+.report-container {
+  min-height: 200px;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+}
+
+.loading { color: #93c5fd; }
+.error { color: #f87171; }
+
+.report-content {
+  max-width: 760px;
+  margin: 0 auto;
+  line-height: 1.85;
+  color: #e2e8f0;
+}
+
+.report-content h1 { font-size: 1.8rem; margin: 1.5rem 0 1rem; }
+.report-content h2 {
+  font-size: 1.4rem;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.report-content h3 { font-size: 1.15rem; margin: 1.2rem 0 0.6rem; color: #93c5fd; }
+.report-content ul { padding-left: 1.2rem; }
+.report-content li { margin-bottom: 0.6rem; }
+.report-content strong { color: #fbbf24; }
+.report-content p { margin: 0.6rem 0; }
+
+.nav-links {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.nav-links a {
+  color: #93c5fd;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.nav-links a:hover { text-decoration: underline; }
+
+/* ---- 响应式 ---- */
+@media (max-width: 720px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .report-content {
+    font-size: 0.95rem;
+  }
+}
