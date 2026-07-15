@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
 
-const categories = ['全部', '战争', '能源', '科技', '政治', '商业']
+const categories = ['全部', '战争', '能源', '科技', '政治', '商业', '自然灾害', '网络安全']
 const catColors: Record<string, string> = {
   '战争': '#ff4d4f', '能源': '#f7b500', '科技': '#40a9ff',
-  '政治': '#e74c3c', '商业': '#9b59b6'
+  '政治': '#e74c3c', '商业': '#9b59b6', '自然灾害': '#ff6b35', '网络安全': '#ff0044'
 }
 
 export default function EventsPage() {

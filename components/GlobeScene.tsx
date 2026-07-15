@@ -50,6 +50,17 @@ export default function GlobeScene() {
     localStorage.setItem('aim_favorites', JSON.stringify([...next]));
   };
 
+  const shareEvent = async () => {
+    if (!selected) return;
+    const text = `[${selected.category}] ${selected.title} — ${selected.summary} 📍 ${selected.city}, ${selected.country}`;
+    if (navigator.share) {
+      try { await navigator.share({ title: selected.title, text }) } catch {}
+    } else {
+      await navigator.clipboard.writeText(text);
+      alert('已复制到剪贴板');
+    }
+  };
+
   useEffect(() => {
     if (!globeEl.current) return;
 
@@ -180,13 +191,12 @@ export default function GlobeScene() {
           <p>{selected.summary}</p>
           <div className="event-meta-row">
             <span>📍 {selected.city}, {selected.country}</span>
-            <button
-              className="fav-btn"
-              onClick={() => toggleFavorite(selected.id)}
-              title={favorites.has(selected.id) ? '取消收藏' : '收藏'}
-            >
-              {favorites.has(selected.id) ? '⭐' : '☆'}
-            </button>
+            <span style={{ display: 'flex', gap: '0.3rem' }}>
+              <button className="fav-btn" onClick={() => toggleFavorite(selected.id)} title="收藏">
+                {favorites.has(selected.id) ? '⭐' : '☆'}
+              </button>
+              <button className="fav-btn" onClick={shareEvent} title="分享">↗</button>
+            </span>
           </div>
           <button
             className="btn btn-glass"
@@ -210,6 +220,8 @@ export default function GlobeScene() {
         <span className="legend-dot" style={{ '--c': '#40a9ff' } as any}>科技</span>
         <span className="legend-dot" style={{ '--c': '#9b59b6' } as any}>商业</span>
         <span className="legend-dot" style={{ '--c': '#e74c3c' } as any}>政治</span>
+        <span className="legend-dot" style={{ '--c': '#ff6b35' } as any}>灾害</span>
+        <span className="legend-dot" style={{ '--c': '#ff0044' } as any}>网安</span>
       </div>
     </div>
   );

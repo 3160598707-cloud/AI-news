@@ -52,6 +52,9 @@ const seedEvents: EventItem[] = [
   { id: 'event-13', city: '首尔', country: '韩国', lat: 37.5665, lng: 126.9780, category: '科技', title: '三星发布AI手机Galaxy S26', summary: '端侧大模型实时翻译/修图，AI手机市场争夺白热化。', color: '#40a9ff' },
   { id: 'event-14', city: '纽约', country: '美国', lat: 40.7128, lng: -74.0060, category: '商业', title: '比特币突破12万美元', summary: '机构资金持续流入，ETF净申购创纪录。', color: '#9b59b6' },
   { id: 'event-15', city: '日内瓦', country: '瑞士', lat: 46.2044, lng: 6.1432, category: '政治', title: '联合国气候变化大会达成新协议', summary: '195国同意2035年前减排60%目标。', color: '#e74c3c' },
+  { id: 'event-16', city: '洛杉矶', country: '美国', lat: 34.0522, lng: -118.2437, category: '自然灾害', title: '加州7.2级地震引发山火', summary: '震中位于洛杉矶北部，已触发海啸预警，应急响应全面启动。', color: '#ff6b35' },
+  { id: 'event-17', city: '孟买', country: '印度', lat: 19.0760, lng: 72.8777, category: '网络安全', title: '南亚金融机构遭勒索软件攻击', summary: '超过20家银行系统被加密，攻击者要求加密货币支付赎金。', color: '#ff0044' },
+  { id: 'event-18', city: '东京', country: '日本', lat: 35.6762, lng: 139.6503, category: '自然灾害', title: '超强台风"天鹰"逼近日本', summary: '预计明日登陆九州，最大风速65m/s，百万居民收到撤离令。', color: '#ff6b35' },
 ];
 
 // Initialize: load from disk or seed
