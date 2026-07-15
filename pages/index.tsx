@@ -12,6 +12,7 @@ export default function Home() {
   const [prediction, setPrediction] = useState('');
   const [rankings, setRankings] = useState<any[]>([]);
   const [categoryDist, setCategoryDist] = useState<any[]>([]);
+  const [eventCount, setEventCount] = useState(0);
 
   const loadAnalysis = async () => {
     setLoading(true);
@@ -38,6 +39,7 @@ export default function Home() {
     fetch('/api/stats').then(r => r.json()).then(d => {
       setRankings(d.countryRanking?.slice(0, 5) || []);
       setCategoryDist(d.categoryDistribution || []);
+      setEventCount(d.total || 0);
     }).catch(() => {});
   }, []);
 
@@ -48,6 +50,17 @@ export default function Home() {
       </section>
 
       <aside className="sidebar glass">
+        {/* Header */}
+        <div className="sidebar-section" style={{ borderColor: 'rgba(0,200,220,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h2 style={{ margin: 0 }}>◆ COMMAND CENTER</h2>
+            <span className="live-dot" />
+          </div>
+          <p className="analysis-text" style={{ fontSize: '0.7rem', marginTop: '0.3rem' }}>
+            SYS:ONLINE · NODES:{eventCount || '...'} · DEEPSEEK V4
+          </p>
+        </div>
+
         {/* AI Analysis */}
         <div className="sidebar-section">
           <h2>🤖 AI 态势</h2>

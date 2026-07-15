@@ -241,6 +241,26 @@ body::before {
   animation: blink 2s infinite;
 }
 @keyframes blink { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+/* Live status dot */
+.live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: blink 2s infinite;
+}
+
+/* HUD corner info */
+.globe-hud {
+  position: absolute; bottom: 3.5rem; right: 1rem; z-index: 10;
+  display: flex; flex-direction: column; gap: 0.3rem;
+  pointer-events: none;
+}
+.globe-hud-item {
+  font-family: monospace; font-size: 0.65rem; color: var(--muted);
+  text-align: right; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.globe-hud-val { color: var(--accent); font-weight: 700; }
 .sidebar-nav {
   display: flex; flex-direction: column; gap: 0.4rem;
 }

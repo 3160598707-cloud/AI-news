@@ -223,6 +223,13 @@ export default function GlobeScene() {
         <span className="legend-dot" style={{ '--c': '#ff6b35' } as any}>灾害</span>
         <span className="legend-dot" style={{ '--c': '#ff0044' } as any}>网安</span>
       </div>
+
+      {/* HUD corner */}
+      <div className="globe-hud">
+        <div className="globe-hud-item">NODES <span className="globe-hud-val">{events.length}</span></div>
+        <div className="globe-hud-item">LAT <span className="globe-hud-val">{selected?.lat?.toFixed(2) || '--'}</span></div>
+        <div className="globe-hud-item">LNG <span className="globe-hud-val">{selected?.lng?.toFixed(2) || '--'}</span></div>
+      </div>
     </div>
   );
 }
