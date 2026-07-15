@@ -63,8 +63,16 @@ export default function GlobeScene() {
 
   useEffect(() => {
     if (!globeEl.current) return;
+    let destroyed = false;
 
-    (async () => {
+    const initGlobe = async () => {
+      if (destroyed || !globeEl.current) return;
+      const w = globeEl.current.clientWidth || window.innerWidth;
+      const h = globeEl.current.clientHeight || window.innerHeight;
+      if (w < 10 || h < 10) {
+        setTimeout(initGlobe, 300);
+        return;
+      }
       try {
         const res = await fetch('/api/events');
         const data = await res.json();
@@ -142,7 +150,11 @@ export default function GlobeScene() {
       } catch (err) {
         console.error('Failed to load events', err);
       }
-    })();
+    };
+
+    const cleanup = () => { destroyed = true; };
+    initGlobe();
+    return cleanup;
   }, []);
 
   const resetView = () => {
