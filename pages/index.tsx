@@ -35,7 +35,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main>
+    <>
       <header className="hero">
         <h1>AI World Intelligence Monitor</h1>
         <p>私人全球情报助手 · 3D 地球可视化 · AI 态势分析</p>
@@ -68,6 +68,6 @@ export default function Home() {
           </ul>
         </div>
       </section>
-    </main>
+    </>
   );
 }

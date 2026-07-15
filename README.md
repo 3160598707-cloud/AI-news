@@ -12,16 +12,25 @@ npm run dev:local          # 启动 http://127.0.0.1:3001
 ## 项目结构
 
 ```
-├── components/GlobeScene.tsx   # 3D 地球可视化
+├── components/
+│   ├── GlobeScene.tsx          # 3D 地球可视化
+│   └── Layout.tsx              # 导航栏 + 页脚
 ├── pages/
-│   ├── index.tsx               # 首页
+│   ├── index.tsx               # 首页（地球 + AI 分析）
+│   ├── events.tsx              # 事件列表（分类筛选）
+│   ├── daily.tsx               # AI 日报（语音朗读）
 │   └── api/
 │       ├── events.ts           # GET/POST 事件
 │       ├── rss-ingest.ts       # RSS 新闻采集
+│       ├── analyze.ts          # AI 态势分析
+│       ├── daily-report.ts     # AI 日报生成
 │       └── ingest-daily.ts     # 读取 daily_news.txt
-├── lib/eventsStore.ts          # 共享事件存储
+├── lib/
+│   ├── eventsStore.ts          # 事件存储（JSON 持久化）
+│   └── deepseek.ts             # DeepSeek API 客户端
 ├── feeds/sample-rss.xml        # 本地示例 RSS
-├── scripts/                    # 测试脚本
+├── scripts/                    # 测试 + 采集脚本
+├── .github/workflows/          # 每日自动采集
 └── styles/globals.css
 ```
 

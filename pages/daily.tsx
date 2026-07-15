@@ -65,32 +65,26 @@ export default function DailyPage() {
   return (
     <>
       <Head><title>AI 日报 — AI World Monitor</title></Head>
-      <main>
-        <header className="hero">
-          <h1>📰 AI 日报</h1>
-          <p>由 DeepSeek 自动生成 · 基于实时事件分析</p>
-          {report && (
-            <button className="btn" onClick={speak}>
-              {speaking ? '⏹ 停止' : '🔊 AI 语音朗读'}
-            </button>
-          )}
-        </header>
+      <header className="hero">
+        <h1>📰 AI 日报</h1>
+        <p>由 DeepSeek 自动生成 · 基于实时事件分析</p>
+        {report && (
+          <button className="btn" onClick={speak}>
+            {speaking ? '⏹ 停止' : '🔊 AI 语音朗读'}
+          </button>
+        )}
+      </header>
 
-        <div className="report-container">
-          {loading && <p className="loading">⏳ 正在生成 AI 日报...</p>}
-          {error && <p className="error">❌ {error}</p>}
-          {report && (
-            <article
-              className="report-content"
-              dangerouslySetInnerHTML={{ __html: report }}
-            />
-          )}
-        </div>
-
-        <nav className="nav-links">
-          <a href="/">← 返回地球视图</a>
-        </nav>
-      </main>
+      <div className="report-container">
+        {loading && <p className="loading">⏳ 正在生成 AI 日报...</p>}
+        {error && <p className="error">❌ {error}</p>}
+        {report && (
+          <article
+            className="report-content"
+            dangerouslySetInnerHTML={{ __html: report }}
+          />
+        )}
+      </div>
     </>
   )
 }

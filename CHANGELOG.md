@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 0.8.0 — 2026-07-15
+
+### Added
+- 共享导航栏（`components/Layout.tsx`）：地球/事件/日报、响应式汉堡菜单
+- `/events` 事件列表页：分类筛选、卡片网格
+- 事件 JSON 文件持久化（`data/events.json`，重启不丢失）
+- GitHub Actions 每日 RSS 自动采集（`.github/workflows/daily-ingest.yml`）
+- 独立 RSS 采集脚本（`scripts/ingest_rss_standalone.js`）
+- 页脚组件
+
+### Changed
+- `_app.tsx` 使用 Layout 包裹所有页面
+- `index.tsx`、`daily.tsx` 移除独立的 `<main>` 和返回链接
+- `eventsStore.ts` 新增磁盘读写
+- `.gitignore` 添加 `data/`
+- CSS 重构：App Shell、导航、事件列表、响应式增强
+
 ## 0.7.0 — 2026-07-15
 
 ### Added

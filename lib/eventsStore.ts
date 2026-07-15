@@ -10,7 +10,33 @@ type EventItem = {
   color: string;
 };
 
-let events: EventItem[] = [
+import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { join } from 'path'
+
+const DATA_FILE = join(process.cwd(), 'data', 'events.json')
+
+function loadFromDisk(): EventItem[] {
+  try {
+    if (existsSync(DATA_FILE)) {
+      return JSON.parse(readFileSync(DATA_FILE, 'utf-8'))
+    }
+  } catch { /* ignore corrupt file */ }
+  return []
+}
+
+function saveToDisk(items: EventItem[]) {
+  try {
+    const dir = join(process.cwd(), 'data')
+    if (!existsSync(dir)) {
+      const { mkdirSync } = require('fs')
+      mkdirSync(dir, { recursive: true })
+    }
+    writeFileSync(DATA_FILE, JSON.stringify(items, null, 2), 'utf-8')
+  } catch { /* ignore write error */ }
+}
+
+// Seed data — only used when no disk data exists
+const seedEvents: EventItem[] = [
   {
     id: 'event-1',
     city: '基辅',
@@ -79,16 +105,25 @@ let events: EventItem[] = [
   }
 ];
 
+// Initialize: load from disk or seed
+let events: EventItem[] = loadFromDisk()
+if (events.length === 0) {
+  events = [...seedEvents]
+  saveToDisk(events)
+}
+
 export function getEvents() {
   return events;
 }
 
 export function addEvent(ev: EventItem) {
   events = [ev, ...events];
+  saveToDisk(events)
   return events;
 }
 
 export function replaceEvents(newEvents: EventItem[]) {
   events = newEvents;
+  saveToDisk(events)
   return events;
 }
