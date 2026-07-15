@@ -87,8 +87,16 @@ export default function GlobeScene() {
         const data = await res.json();
         const evs = (data.events || []) as EventItem[];
         setEvents(evs);
-        if (evs.length === 0) return;
+        if (evs.length === 0) { setGlobeStatus('failed'); return; }
         setSelected(evs[0]);
+
+        // Check WebGL support
+        const testCanvas = document.createElement('canvas');
+        const gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
+        if (!gl) {
+          setGlobeStatus('no-webgl');
+          return;
+        }
 
         const el = globeEl.current!;
         // Ensure container has explicit size for iOS
@@ -159,7 +167,8 @@ export default function GlobeScene() {
           globe._destructor?.();
         };
       } catch (err) {
-        console.error('Failed to load events', err);
+        console.error('Globe init failed', err);
+        setGlobeStatus('failed');
       }
     };
 
@@ -231,6 +240,19 @@ export default function GlobeScene() {
             {insightLoading ? '⏳ AI 分析中...' : '🤖 AI 深度分析'}
           </button>
           {insight && <p className="event-insight">{insight}</p>}
+        </div>
+      ) : globeStatus === 'no-webgl' ? (
+        <div className="event-card glass" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+          <span className="event-badge" style={{ background: 'var(--accent)' }}>MOBILE</span>
+          <h2>全球热点 ({events.length})</h2>
+          {events.slice(0, 10).map(ev => (
+            <div key={ev.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid var(--border)' }}
+                 onClick={() => setSelected(ev)}>
+              <span style={{ color: ev.color, fontSize: '0.65rem', textTransform: 'uppercase' }}>{ev.category}</span>
+              <div style={{ fontWeight: 600, fontSize: '0.85rem', margin: '0.15rem 0' }}>{ev.title}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>📍 {ev.city}, {ev.country}</div>
+            </div>
+          ))}
         </div>
       ) : (
         <div className="event-card glass">
