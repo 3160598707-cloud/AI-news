@@ -196,14 +196,67 @@ html, body {
 }
 .sidebar-link:hover { background: rgba(255,255,255,0.05); }
 .sidebar-meta {
-  margin-top: auto;
-  text-align: center;
+  margin-top: auto; text-align: center;
   font-size: 0.7rem; color: #3a4458;
 }
 .analysis-text {
   font-size: 0.82rem; line-height: 1.65; color: #bcc8da;
   white-space: pre-wrap;
 }
+
+/* Risk meter */
+.risk-meter {
+  display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;
+}
+.risk-score { font-size: 2rem; font-weight: 800; }
+.risk-level { font-size: 0.85rem; color: var(--muted); }
+
+/* Rank list */
+.rank-list { display: flex; flex-direction: column; gap: 0.3rem; }
+.rank-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.3rem 0; font-size: 0.82rem;
+}
+.rank-num { color: var(--muted); width: 28px; }
+.rank-name { flex: 1; }
+.rank-count { color: var(--muted); font-size: 0.75rem; }
+
+/* World Clock */
+.clock-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;
+}
+.clock-item {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0.4rem; border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+}
+.clock-flag { font-size: 1rem; }
+.clock-label { font-size: 0.65rem; color: var(--muted); }
+.clock-time { font-size: 0.85rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Timeline */
+.timeline {
+  max-width: 600px; margin: 0 auto;
+  padding-left: 1.5rem; border-left: 2px solid rgba(255,255,255,0.08);
+}
+.timeline-item { position: relative; margin-bottom: 1.5rem; }
+.timeline-dot {
+  position: absolute; left: -1.65rem; top: 0.5rem;
+  width: 12px; height: 12px; border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+.timeline-card {
+  padding: 1rem; border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.timeline-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 0.3rem;
+}
+.timeline-index { font-size: 0.7rem; color: var(--muted); }
+.timeline-card h3 { margin: 0.3rem 0; font-size: 1rem; }
+.timeline-card p { margin: 0; font-size: 0.85rem; color: var(--muted); }
 
 /* ===== Buttons ===== */
 .btn {

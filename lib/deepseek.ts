@@ -119,3 +119,46 @@ ${eventList}
     { role: 'user', content: prompt }
   ], { temperature: 0.6, maxTokens: 1024 })
 }
+
+/**
+ * 生成风险指数（0-100）
+ */
+export async function generateRiskIndex(events: Array<{ title: string; category: string }>) {
+  if (events.length === 0) return { score: 0, level: '低', summary: '暂无数据' }
+
+  const eventList = events.map((e, i) => `${i + 1}. [${e.category}] ${e.title}`).join('\n')
+  const prompt = `基于以下全球事件，评估当前全球风险指数（0-100）。返回JSON格式：{"score":数字,"level":"低/中/高/极高","summary":"一句话总结"}
+
+事件：
+${eventList}`
+
+  const text = await chat([
+    { role: 'system', content: '你是风险评估专家。只返回JSON，不要其他文字。' },
+    { role: 'user', content: prompt }
+  ], { temperature: 0.3, maxTokens: 200 })
+
+  try { return JSON.parse(text) }
+  catch { return { score: 50, level: '中', summary: text.slice(0, 100) } }
+}
+
+/**
+ * AI 预测（明确标注为预测）
+ */
+export async function generatePrediction(events: Array<{ title: string; category: string; summary: string }>) {
+  if (events.length === 0) return '暂无足够数据生成预测。'
+
+  const eventList = events.map((e, i) => `${i + 1}. [${e.category}] ${e.title}: ${e.summary}`).join('\n')
+  const prompt = `基于以下事件趋势，生成3条未来24-72小时可能发生的事件预测。每条标注置信度（高/中/低）。
+
+事件：
+${eventList}
+
+格式：
+1. [类别] 预测内容 — 置信度：高/中/低
+（首行标注：⚠️ 以下为AI预测，仅供参考，不构成任何建议）`
+
+  return chat([
+    { role: 'system', content: '你是趋势预测分析师。回答前必须标注预测性质。' },
+    { role: 'user', content: prompt }
+  ], { temperature: 0.7, maxTokens: 512 })
+}
