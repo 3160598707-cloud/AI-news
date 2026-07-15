@@ -29,6 +29,8 @@ npm run dev:local          # 启动 http://127.0.0.1:3001
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
+| GET | `/api/analyze` | AI 态势分析（DeepSeek） |
+| GET | `/api/daily-report` | AI 日报生成（Markdown） |
 | GET | `/api/events` | 获取所有事件 |
 | POST | `/api/events` | 添加事件（JSON body） |
 | GET | `/api/rss-ingest` | 抓取 RSS 并转为事件 |
@@ -39,7 +41,7 @@ npm run dev:local          # 启动 http://127.0.0.1:3001
 - ✅ 第 1 阶段：项目环境
 - ✅ 第 2 阶段：网站框架（Next.js + Globe）
 - ✅ 第 3 阶段：新闻采集（RSS + 本地 fallback）
-- ⬜ 第 4 阶段：DeepSeek 分析
+- ✅ 第 4 阶段：DeepSeek 分析（态势分析 + 日报）
 - ⬜ 第 5 阶段：日报
 - ⬜ 第 6 阶段：地图增强
 - ⬜ 第 7 阶段：PWA

@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 0.3.0 — 2026-07-15
+
+### Added
+- DeepSeek AI 集成（`lib/deepseek.ts`）
+  - `chat()` — 通用单轮对话
+  - `analyzeEvents()` — 全局态势分析
+  - `generateDailyReport()` — Markdown 日报生成
+- `/api/analyze` — AI 态势分析 API（返回中文分析）
+- `/api/daily-report` — AI 日报生成 API（返回 Markdown）
+- 测试脚本：`scripts/test_analyze.js`、`scripts/test_daily_report.js`
+- `.env.local` 支持（DEEPSEEK_API_KEY）
+
+### Changed
+- `.gitignore` 添加 `.env.local`
+
 ## 0.2.0 — 2026-07-15
 
 ### Added

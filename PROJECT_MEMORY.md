@@ -19,7 +19,7 @@ Next.js 16 (Pages Router) + TypeScript
 | 前端框架 | Next.js 16 | 成熟、PWA 支持、API Routes |
 | 3D 地图 | globe.gl v2 | 免费开源、React 兼容 |
 | RSS 解析 | rss-parser v3 | 成熟库、44M+ 周下载 |
-| 事件存储 | 内存（dev） | MVP 阶段无需数据库 |
+| AI 分析 | DeepSeek API (deepseek-chat) | 免费额度、中文优秀、API 兼容 OpenAI |
 | 语言 | TypeScript strict | 类型安全 |
 
 ## 已知限制
@@ -31,8 +31,8 @@ Next.js 16 (Pages Router) + TypeScript
 
 ## 下一步优先级
 
-1. DeepSeek API 集成（事件摘要/AI 分析）
-2. 日报自动生成
-3. 地图增强（真实地理坐标映射）
-4. PWA 离线支持
-5. GitHub Actions 自动部署
+1. 日报前端页面（展示 AI 日报）
+2. 地图增强（真实地理坐标映射 + 点击详情联动）
+3. PWA 离线支持
+4. GitHub Actions 自动部署
+5. 通知推送
