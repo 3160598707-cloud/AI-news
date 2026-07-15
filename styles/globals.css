@@ -83,10 +83,10 @@ body::before {
 }
 
 /* ===== Home ===== */
-.home-fullscreen { position: fixed; inset: 0; display: flex; z-index: 1; }
-.globe-stage { flex: 1; position: relative; overflow: hidden; }
-.globe-wrapper { position: absolute; inset: 0; }
-.globe-canvas { width: 100%; height: 100%; }
+.home-fullscreen { position: fixed; inset: 0; display: flex; z-index: 1; width:100%;height:100%;height:100dvh }
+.globe-stage { flex: 1; position: relative; overflow: hidden; min-height: 200px }
+.globe-wrapper { position: absolute; inset: 0; width:100%;height:100% }
+.globe-canvas { width: 100%; height: 100%; position: absolute; inset: 0 }
 
 .globe-topbar {
   position: absolute; top: 0; left: 0; right: 0;

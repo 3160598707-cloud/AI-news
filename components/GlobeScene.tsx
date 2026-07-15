@@ -34,6 +34,8 @@ export default function GlobeScene() {
   const [insight, setInsight] = useState('');
   const [insightLoading, setInsightLoading] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [globeStatus, setGlobeStatus] = useState('initializing');
+  const retryCount = useRef(0);
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -67,12 +69,19 @@ export default function GlobeScene() {
 
     const initGlobe = async () => {
       if (destroyed || !globeEl.current) return;
+      // Force dimensions on mobile — use window if container is 0
       const w = globeEl.current.clientWidth || window.innerWidth;
       const h = globeEl.current.clientHeight || window.innerHeight;
       if (w < 10 || h < 10) {
-        setTimeout(initGlobe, 300);
+        retryCount.current++;
+        if (retryCount.current > 20) {
+          setGlobeStatus('failed');
+          return;
+        }
+        setTimeout(initGlobe, 500);
         return;
       }
+      setGlobeStatus('loading');
       try {
         const res = await fetch('/api/events');
         const data = await res.json();
@@ -82,8 +91,9 @@ export default function GlobeScene() {
         setSelected(evs[0]);
 
         const el = globeEl.current!;
-        const w = el.clientWidth || window.innerWidth;
-        const h = el.clientHeight || window.innerHeight;
+        // Ensure container has explicit size for iOS
+        el.style.width = w + 'px';
+        el.style.height = h + 'px';
         const globe = new Globe(el)
           .width(w)
           .height(h)
@@ -121,6 +131,7 @@ export default function GlobeScene() {
         globe.controls().maxDistance = 600;
 
         globeRef.current = globe;
+        setGlobeStatus('ready');
 
         // Load country polygon outlines
         try {
@@ -223,7 +234,9 @@ export default function GlobeScene() {
         </div>
       ) : (
         <div className="event-card glass">
-          <p className="muted">正在加载全球事件...</p>
+          <p className="muted">
+            {globeStatus === 'failed' ? '⚠️ 地球渲染失败，请检查 WebGL 支持' : '正在初始化 3D 地球...'}
+          </p>
         </div>
       )}
 
