@@ -14,60 +14,57 @@ export default function Home() {
       const data = await res.json();
       const text = data.analysis || data.error || '';
       setAnalysis(text);
-
-      // 浏览器通知
       if (text && 'Notification' in window && Notification.permission === 'granted') {
-        new Notification('AI 态势分析', { body: text.slice(0, 120) + '...', icon: '/icon-192.png' });
+        new Notification('AI 态势分析', { body: text.slice(0, 120) + '...' });
       }
-    } catch {
-      setAnalysis('');
-    } finally {
-      setLoading(false);
-    }
+    } catch { setAnalysis(''); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => {
     loadAnalysis();
-    // 请求通知权限
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
   }, []);
 
   return (
-    <>
-      <header className="hero">
-        <h1>AI World Intelligence Monitor</h1>
-        <p>私人全球情报助手 · 3D 地球可视化 · AI 态势分析</p>
-        <nav className="hero-nav">
-          <a href="/daily" className="btn">📰 AI 日报</a>
-          <button className="btn btn-secondary" onClick={loadAnalysis} disabled={loading}>
-            {loading ? '⏳ 分析中...' : '🔄 刷新分析'}
-          </button>
-        </nav>
-      </header>
-      <section className="panel">
+    <div className="home-fullscreen">
+      {/* Globe fills the screen */}
+      <section className="globe-stage">
         <GlobeScene />
       </section>
-      <section className="summary-grid">
-        <div className="card">
-          <h2>🤖 AI 态势分析</h2>
+
+      {/* Floating sidebar */}
+      <aside className="sidebar glass">
+        <div className="sidebar-section">
+          <h2>🤖 AI 态势</h2>
           {analysis ? (
             <p className="analysis-text">{analysis}</p>
           ) : (
-            <p className="muted">点击上方「刷新分析」获取 AI 洞察</p>
+            <p className="muted">分析加载中...</p>
           )}
+          <button
+            className="btn btn-glass btn-block"
+            onClick={loadAnalysis}
+            disabled={loading}
+          >
+            {loading ? '⏳' : '🔄'} 刷新分析
+          </button>
         </div>
-        <div className="card">
-          <h2>📡 系统模块</h2>
-          <ul>
-            <li>全球 3D 地球视图</li>
-            <li>RSS 新闻自动采集</li>
-            <li>DeepSeek AI 分析</li>
-            <li>AI 日报自动生成</li>
-          </ul>
+
+        <div className="sidebar-section">
+          <h2>📡 快捷入口</h2>
+          <nav className="sidebar-nav">
+            <a href="/events" className="sidebar-link">📡 事件列表</a>
+            <a href="/daily" className="sidebar-link">📰 AI 日报</a>
+          </nav>
         </div>
-      </section>
-    </>
+
+        <div className="sidebar-section sidebar-meta">
+          <span>DeepSeek AI · Next.js 16</span>
+        </div>
+      </aside>
+    </div>
   );
 }

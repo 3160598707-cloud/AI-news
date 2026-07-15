@@ -98,10 +98,10 @@ const seedEvents: EventItem[] = [
     country: '新加坡',
     lat: 1.3521,
     lng: 103.8198,
-    category: '跨境电商',
+    category: '商业',
     title: '东南亚电商GMV增长40%',
-    summary: 'Shopee与Lazada季度报告显示跨境订单激增，中国卖家占主导。',
-    color: '#2ecc71'
+    summary: 'Shopee与Lazada季度报告显示跨境订单激增，中国卖家占主导，跨境电商成增长引擎。',
+    color: '#9b59b6'
   }
 ];
 

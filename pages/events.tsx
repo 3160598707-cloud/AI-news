@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 
-const categories = ['全部', '战争', '能源', '科技', '政治', '商业', '跨境电商']
+const categories = ['全部', '战争', '能源', '科技', '政治', '商业']
 const catColors: Record<string, string> = {
   '战争': '#ff4d4f', '能源': '#f7b500', '科技': '#40a9ff',
-  '政治': '#ff4d4f', '商业': '#9b59b6', '跨境电商': '#2ecc71'
+  '政治': '#e74c3c', '商业': '#9b59b6'
 }
 
 export default function EventsPage() {
