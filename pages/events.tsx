@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import { motion } from 'framer-motion'
 
 const categories = ['全部', '战争', '能源', '科技', '政治', '商业']
 const catColors: Record<string, string> = {
@@ -57,15 +58,23 @@ export default function EventsPage() {
       {loading && <p className="loading">⏳ 加载中...</p>}
 
       <div className="events-grid">
-        {filtered.map((ev: any) => (
-          <div key={ev.id} className="event-item" style={{ borderLeftColor: ev.color }}>
+        {filtered.map((ev: any, i: number) => (
+          <motion.div
+            key={ev.id}
+            className="event-item"
+            style={{ borderLeftColor: ev.color }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05, duration: 0.4 }}
+            whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+          >
             <span className="event-cat" style={{ color: ev.color }}>{ev.category}</span>
             <h3>{ev.title}</h3>
             <p>{ev.summary}</p>
             <div className="event-meta">
               <span>📍 {ev.city}, {ev.country}</span>
             </div>
-          </div>
+          </motion.div>
         ))}
         {!loading && filtered.length === 0 && (
           <p className="muted" style={{ textAlign: 'center', gridColumn: '1 / -1' }}>

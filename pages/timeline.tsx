@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import { motion } from 'framer-motion'
 
 export default function TimelinePage() {
   const [events, setEvents] = useState<any[]>([])
@@ -28,7 +29,13 @@ export default function TimelinePage() {
 
       <div className="timeline">
         {events.map((ev: any, i: number) => (
-          <div key={ev.id} className="timeline-item">
+          <motion.div
+            key={ev.id}
+            className="timeline-item"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.08, duration: 0.5 }}
+          >
             <div className="timeline-dot" style={{ background: ev.color }} />
             <div className="timeline-card">
               <div className="timeline-header">
@@ -39,7 +46,7 @@ export default function TimelinePage() {
               <p>{ev.summary}</p>
               <span className="event-meta">📍 {ev.city}, {ev.country}</span>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
