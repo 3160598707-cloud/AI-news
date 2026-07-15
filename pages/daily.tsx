@@ -19,8 +19,10 @@ function md2html(md: string): string {
 
 export default function DailyPage() {
   const [report, setReport] = useState('')
+  const [rawText, setRawText] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [speaking, setSpeaking] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -28,6 +30,7 @@ export default function DailyPage() {
         const res = await fetch('/api/daily-report')
         const data = await res.json()
         if (data.report) {
+          setRawText(data.report)
           setReport(md2html(data.report))
         } else if (data.error) {
           setError(data.error)
@@ -40,6 +43,25 @@ export default function DailyPage() {
     })()
   }, [])
 
+  const speak = () => {
+    if (!('speechSynthesis' in window)) return
+    const synth = window.speechSynthesis
+    if (speaking) { synth.cancel(); setSpeaking(false); return }
+
+    // 去掉 Markdown 标记，保留纯文本
+    const text = rawText
+      .replace(/[#*\-]/g, '')
+      .replace(/\n+/g, '。')
+      .slice(0, 2000)
+
+    const utter = new SpeechSynthesisUtterance(text)
+    utter.lang = 'zh-CN'
+    utter.rate = 0.9
+    utter.onend = () => setSpeaking(false)
+    setSpeaking(true)
+    synth.speak(utter)
+  }
+
   return (
     <>
       <Head><title>AI 日报 — AI World Monitor</title></Head>
@@ -47,6 +69,11 @@ export default function DailyPage() {
         <header className="hero">
           <h1>📰 AI 日报</h1>
           <p>由 DeepSeek 自动生成 · 基于实时事件分析</p>
+          {report && (
+            <button className="btn" onClick={speak}>
+              {speaking ? '⏹ 停止' : '🔊 AI 语音朗读'}
+            </button>
+          )}
         </header>
 
         <div className="report-container">

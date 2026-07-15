@@ -12,7 +12,13 @@ export default function Home() {
     try {
       const res = await fetch('/api/analyze');
       const data = await res.json();
-      setAnalysis(data.analysis || data.error || '');
+      const text = data.analysis || data.error || '';
+      setAnalysis(text);
+
+      // 浏览器通知
+      if (text && 'Notification' in window && Notification.permission === 'granted') {
+        new Notification('AI 态势分析', { body: text.slice(0, 120) + '...', icon: '/icon-192.png' });
+      }
     } catch {
       setAnalysis('');
     } finally {
@@ -20,7 +26,13 @@ export default function Home() {
     }
   };
 
-  useEffect(() => { loadAnalysis(); }, []);
+  useEffect(() => {
+    loadAnalysis();
+    // 请求通知权限
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
 
   return (
     <main>
