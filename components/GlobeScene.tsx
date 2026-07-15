@@ -78,9 +78,9 @@ export default function GlobeScene() {
           .width(el.clientWidth)
           .height(el.clientHeight)
           .backgroundColor('#000000')
-          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-          .atmosphereColor('#1a3a5c')
-          .atmosphereAltitude(0.25)
+          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+          .atmosphereColor('#111')
+          .atmosphereAltitude(0.2)
           // Arc lines between same-category events
           .arcsData(buildArcs(evs))
           .arcColor((d: any) => d.color)
