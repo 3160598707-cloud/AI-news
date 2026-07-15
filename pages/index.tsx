@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 const GlobeScene = dynamic(() => import('../components/GlobeScene'), { ssr: false });
 const WorldClock = dynamic(() => import('../components/WorldClock'), { ssr: false });
+const ChartsPanel = dynamic(() => import('../components/ChartsPanel'), { ssr: false });
 
 export default function Home() {
   const [analysis, setAnalysis] = useState('');
@@ -10,6 +11,7 @@ export default function Home() {
   const [risk, setRisk] = useState<any>(null);
   const [prediction, setPrediction] = useState('');
   const [rankings, setRankings] = useState<any[]>([]);
+  const [categoryDist, setCategoryDist] = useState<any[]>([]);
 
   const loadAnalysis = async () => {
     setLoading(true);
@@ -33,7 +35,10 @@ export default function Home() {
     // Load prediction
     fetch('/api/prediction').then(r => r.json()).then(d => setPrediction(d.prediction || '')).catch(() => {});
     // Load stats
-    fetch('/api/stats').then(r => r.json()).then(d => setRankings(d.countryRanking?.slice(0, 5) || [])).catch(() => {});
+    fetch('/api/stats').then(r => r.json()).then(d => {
+      setRankings(d.countryRanking?.slice(0, 5) || []);
+      setCategoryDist(d.categoryDistribution || []);
+    }).catch(() => {});
   }, []);
 
   return (
@@ -65,6 +70,8 @@ export default function Home() {
             <p className="analysis-text">{risk.summary}</p>
           </div>
         )}
+
+        {categoryDist.length > 0 && <ChartsPanel data={categoryDist} />}
 
         {/* Country Ranking */}
         {rankings.length > 0 && (

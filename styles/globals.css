@@ -308,6 +308,14 @@ body::before {
 .timeline-card h3 { margin: 0.3rem 0; font-size: 1rem; }
 .timeline-card p { margin: 0; font-size: 0.85rem; color: var(--muted); }
 
+/* Chart legend */
+.chart-legend {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+  margin-top: 0.4rem;
+}
+.chart-legend-item { font-size: 0.7rem; color: var(--muted); display: flex; align-items: center; gap: 0.2rem; }
+.chart-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+
 /* ===== Buttons ===== */
 .btn {
   display: inline-block;

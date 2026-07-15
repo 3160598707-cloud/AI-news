@@ -11,7 +11,10 @@ const LOCAL_FEED = join(__dirname, '..', 'feeds', 'sample-rss.xml')
 
 const REMOTE_FEEDS = [
   'https://feeds.bbci.co.uk/news/world/rss.xml',
-  'https://feeds.reuters.com/reuters/worldNews'
+  'https://feeds.reuters.com/reuters/worldNews',
+  'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+  'https://feeds.bloomberg.com/markets/news.rss',
+  'https://www.theguardian.com/world/rss'
 ]
 
 const FEED_TIMEOUT_MS = 8000
