@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.6.0 — 2026-07-15
+
+### Added
+- PWA 支持：`manifest.json` + Service Worker + 安装元标签
+- `next.config.js`（SW 缓存头配置）
+- 应用图标（emoji favicon）
+
 ## 0.5.0 — 2026-07-15
 
 ### Added
