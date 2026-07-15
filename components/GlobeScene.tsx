@@ -6,6 +6,8 @@ export default function GlobeScene() {
   const globeEl = useRef<HTMLDivElement>(null);
   const [events, setEvents] = useState<any[]>([]);
   const [selected, setSelected] = useState<any | null>(null);
+  const [insight, setInsight] = useState('');
+  const [insightLoading, setInsightLoading] = useState(false);
 
   useEffect(() => {
     let globeInstance: any | null = null;
@@ -34,6 +36,7 @@ export default function GlobeScene() {
           .pointLabel((d: any) => `${d.category} - ${d.title}`)
           .onPointClick((point: any) => {
             setSelected(point);
+            setInsight('');
           });
 
         globeInstance.controls().autoRotate = true;
@@ -60,6 +63,25 @@ export default function GlobeScene() {
     })();
   }, []);
 
+  const analyzeEvent = async () => {
+    if (!selected) return;
+    setInsightLoading(true);
+    setInsight('');
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify([selected])
+      });
+      const data = await res.json();
+      setInsight(data.analysis || data.error || '');
+    } catch {
+      setInsight('');
+    } finally {
+      setInsightLoading(false);
+    }
+  };
+
   return (
     <div className="globe-wrapper">
       <div ref={globeEl} className="globe-canvas" />
@@ -69,10 +91,17 @@ export default function GlobeScene() {
             <h3>{selected.category} 热点</h3>
             <h4>{selected.title}</h4>
             <p>{selected.summary}</p>
-            <p>
-              <strong>位置：</strong>
-              {selected.city}, {selected.country}
+            <p className="event-location">
+              📍 {selected.city}, {selected.country}
             </p>
+            <button
+              className="btn btn-small"
+              onClick={analyzeEvent}
+              disabled={insightLoading}
+            >
+              {insightLoading ? '⏳ AI 分析中...' : '🤖 AI 深度分析'}
+            </button>
+            {insight && <p className="event-insight">{insight}</p>}
           </>
         ) : (
           <p>正在加载事件...</p>

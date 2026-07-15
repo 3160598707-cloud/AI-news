@@ -9,8 +9,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const events = getEvents()
-    if (events.length === 0) {
+    // POST with body: use provided events; otherwise use store
+    const body = req.method === 'POST' ? req.body : null
+    const events = (Array.isArray(body) && body.length > 0) ? body : getEvents()
+
+    if (!events || events.length === 0) {
       return res.status(200).json({ analysis: '暂无事件可分析。' })
     }
 

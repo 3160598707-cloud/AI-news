@@ -88,6 +88,26 @@ main {
   color: #dbe1f1;
 }
 
+.event-location {
+  font-size: 0.85rem;
+  color: #94a3b8 !important;
+}
+
+.btn-small {
+  margin-top: 0.75rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+.event-insight {
+  margin-top: 0.75rem !important;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.9rem;
+  color: #fbbf24 !important;
+}
+
 .summary {
   margin-top: 2rem;
   display: grid;
