@@ -164,7 +164,18 @@ html, body {
 }
 .event-card h2 { margin: 0; font-size: 1.2rem; }
 .event-card p { margin: 0.6rem 0; line-height: 1.55; color: #cbd5e1; font-size: 0.9rem; }
-.event-meta-row { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; }
+.event-meta-row {
+  font-size: 0.8rem; color: var(--muted);
+  margin-bottom: 0.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.fav-btn {
+  background: none; border: none;
+  font-size: 1.1rem; cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  transition: transform 0.15s;
+}
+.fav-btn:hover { transform: scale(1.2); }
 .event-insight {
   margin-top: 0.8rem; padding-top: 0.7rem;
   border-top: 1px solid rgba(255,255,255,0.06);

@@ -7,6 +7,25 @@ interface EventItem {
   title: string; summary: string; color: string;
 }
 
+/** Build arc connections between events of same category for visual links */
+function buildArcs(events: EventItem[]) {
+  const arcs: { startLat: number; startLng: number; endLat: number; endLng: number; color: string }[] = []
+  const byCat: Record<string, EventItem[]> = {}
+  for (const e of events) {
+    (byCat[e.category] ||= []).push(e)
+  }
+  for (const items of Object.values(byCat)) {
+    for (let i = 0; i < items.length - 1; i++) {
+      arcs.push({
+        startLat: items[i].lat, startLng: items[i].lng,
+        endLat: items[i + 1].lat, endLng: items[i + 1].lng,
+        color: items[i].color
+      })
+    }
+  }
+  return arcs
+}
+
 export default function GlobeScene() {
   const globeEl = useRef<HTMLDivElement>(null);
   const globeRef = useRef<any>(null);
@@ -14,6 +33,22 @@ export default function GlobeScene() {
   const [selected, setSelected] = useState<EventItem | null>(null);
   const [insight, setInsight] = useState('');
   const [insightLoading, setInsightLoading] = useState(false);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
+  // Load favorites from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('aim_favorites');
+      if (stored) setFavorites(new Set(JSON.parse(stored)));
+    } catch { }
+  }, []);
+
+  const toggleFavorite = (id: string) => {
+    const next = new Set(favorites);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setFavorites(next);
+    localStorage.setItem('aim_favorites', JSON.stringify([...next]));
+  };
 
   useEffect(() => {
     if (!globeEl.current) return;
@@ -35,6 +70,14 @@ export default function GlobeScene() {
           .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
           .atmosphereColor('#1a3a5c')
           .atmosphereAltitude(0.25)
+          // Arc lines between same-category events
+          .arcsData(buildArcs(evs))
+          .arcColor((d: any) => d.color)
+          .arcAltitude(0.25)
+          .arcStroke(0.6)
+          .arcDashLength(0.3)
+          .arcDashGap(0.1)
+          .arcDashAnimateTime(3000)
           .pointsData(evs)
           .pointLat('lat')
           .pointLng('lng')
@@ -123,6 +166,13 @@ export default function GlobeScene() {
           <p>{selected.summary}</p>
           <div className="event-meta-row">
             <span>📍 {selected.city}, {selected.country}</span>
+            <button
+              className="fav-btn"
+              onClick={() => toggleFavorite(selected.id)}
+              title={favorites.has(selected.id) ? '取消收藏' : '收藏'}
+            >
+              {favorites.has(selected.id) ? '⭐' : '☆'}
+            </button>
           </div>
           <button
             className="btn btn-glass"
