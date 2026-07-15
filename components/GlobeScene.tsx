@@ -101,6 +101,20 @@ export default function GlobeScene() {
 
         globeRef.current = globe;
 
+        // Load country polygon outlines
+        try {
+          const geoRes = await fetch('https://unpkg.com/three-globe/example/geo-data/ne_110m_admin_0_countries.geojson');
+          if (geoRes.ok) {
+            const countries = await geoRes.json();
+            (globe as any)
+              .polygonsData(countries.features)
+              .polygonCapColor(() => 'rgba(20,40,80,0.15)')
+              .polygonSideColor(() => 'rgba(30,50,90,0.08)')
+              .polygonStrokeColor(() => 'rgba(100,160,220,0.12)')
+              .polygonAltitude(0.001);
+          }
+        } catch { /* GeoJSON unavailable — borders skipped gracefully */ }
+
         const handleResize = () => {
           if (globeEl.current) {
             globe.width(globeEl.current.clientWidth);
