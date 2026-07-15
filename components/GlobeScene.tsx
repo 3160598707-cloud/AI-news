@@ -74,9 +74,11 @@ export default function GlobeScene() {
         setSelected(evs[0]);
 
         const el = globeEl.current!;
+        const w = el.clientWidth || window.innerWidth;
+        const h = el.clientHeight || window.innerHeight;
         const globe = new Globe(el)
-          .width(el.clientWidth)
-          .height(el.clientHeight)
+          .width(w)
+          .height(h)
           .backgroundColor('#000000')
           .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
           .atmosphereColor('#111')

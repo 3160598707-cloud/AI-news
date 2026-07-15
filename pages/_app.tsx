@@ -19,7 +19,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
       <Head>
         <title>AI World Monitor</title>
         <meta name="description" content="私人全球 AI 情报助手" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
         <meta name="theme-color" content="#0a0f1e" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
