@@ -223,14 +223,18 @@ export default function GlobeScene() {
             const countries = await geoRes.json();
             (globe as any)
               .polygonsData(countries.features)
-              .polygonCapColor(() => 'rgba(0,0,0,0)')
-              .polygonSideColor(() => 'rgba(0,0,0,0)')
+              .polygonCapColor((d: any) => {
+                const name = d.properties?.name || '';
+                const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
+                return hasEvent ? 'rgba(30,40,55,0.8)' : 'rgba(25,30,38,0.75)';
+              })
+              .polygonSideColor(() => 'rgba(20,25,32,0.7)')
               .polygonStrokeColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(255,255,255,0.55)' : 'rgba(180,180,180,0.35)';
+                return hasEvent ? 'rgba(180,200,230,0.5)' : 'rgba(140,155,175,0.35)';
               })
-              .polygonAltitude(0.003)
+              .polygonAltitude(0.005)
               .polygonLabel((d: any) => {
                 const name = d.properties?.name || '';
                 const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
