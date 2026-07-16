@@ -1,9 +1,10 @@
-name: Daily Tasks — RSS + AI Report
+name: 🤖 Daily News — RSS + AI Auto Refresh
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # UTC 00:00 daily
-  workflow_dispatch:
+    - cron: '0 0 * * *'        # UTC 00:00 每天自动运行
+    - cron: '0 12 * * *'       # UTC 12:00 每天第二次
+  workflow_dispatch:            # 支持手动触发
 
 jobs:
   daily:
@@ -12,33 +13,42 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm ci
 
-      - name: Run RSS ingest
+      - name: 📡 Step 1 — RSS 全球采集 (40+ 源)
         run: node scripts/ingest_rss_standalone.js
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
 
-      - name: Build project (to verify data)
+      - name: 🤖 Step 2 — DeepSeek AI 新闻生成
+        run: node scripts/fetch_realtime_news.js
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+
+      - name: 🔨 Build 验证
         run: npm run build
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
 
-      - name: Commit updated events
+      - name: 📊 提交更新
         run: |
           git config user.name "ai-monitor-bot"
           git config user.email "bot@aimonitor.local"
           git add data/events.json
           if git diff --cached --quiet; then
-            echo "No event changes"
+            echo "✅ 无新事件"
           else
-            git commit -m "data: auto RSS ingest $(date -u +%Y-%m-%d)"
+            COUNT=$(node -e "console.log(require('./data/events.json').length)")
+            git commit -m "📰 $(date -u +%Y-%m-%d) 日报 — ${COUNT} 条全球事件"
             git push
+            echo "✅ 已推送 ${COUNT} 条事件"
           fi

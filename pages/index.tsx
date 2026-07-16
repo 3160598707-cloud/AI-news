@@ -50,24 +50,27 @@ export default function Home() {
         <GlobeScene />
       </section>
 
-      <aside className="sidebar glass">
+      <aside className="sidebar">
         {/* Header */}
-        <div className="sidebar-section" style={{ borderColor: 'rgba(0,200,220,0.2)' }}>
+        <div className="sidebar-section">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <h2 style={{ margin: 0 }}>COMMAND CENTER</h2>
+            <h2 style={{ margin: 0 }}>态势感知</h2>
             <span className="live-dot" />
           </div>
-          <p className="analysis-text" style={{ fontSize: '0.7rem', marginTop: '0.3rem' }}>
-            SYS:ONLINE · NODES:{eventCount || '...'} · DEEPSEEK V4
+          <p style={{
+            fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)',
+            marginTop: '0.25rem', fontFamily: 'var(--font-body)', fontWeight: 300,
+          }}>
+            AI World Monitor · 实时监控
           </p>
         </div>
 
         {/* AI Analysis */}
         <div className="sidebar-section">
           <h2>AI 分析</h2>
-          {analysis ? <p className="analysis-text">{analysis}</p> : <p className="muted">加载中...</p>}
+          {analysis ? <p className="analysis-text">{analysis}</p> : <p className="analysis-text" style={{color:'rgba(255,255,255,0.25)'}}>正在加载态势分析...</p>}
           <button className="btn btn-glass btn-block" onClick={loadAnalysis} disabled={loading}>
-            {loading ? '...' : '刷新'}
+            {loading ? '分析中...' : '刷新分析'}
           </button>
         </div>
 
@@ -76,7 +79,7 @@ export default function Home() {
           <div className="sidebar-section">
             <h2>风险指数</h2>
             <div className="risk-meter">
-              <span className="risk-score" style={{ color: risk.score > 70 ? '#ff4d4f' : risk.score > 40 ? '#f7b500' : '#2ecc71' }}>
+              <span className="risk-score" style={{ color: risk.score > 70 ? '#ff6b6b' : risk.score > 40 ? '#fbbf24' : '#4ade80' }}>
                 {risk.score}
               </span>
               <span className="risk-level">{risk.level}</span>
@@ -124,7 +127,7 @@ export default function Home() {
         <WorldClock />
         <CryptoTicker />
 
-        <div className="sidebar-section sidebar-meta">
+        <div className="sidebar-meta" style={{ padding: '0.5rem' }}>
           <span>DeepSeek AI · Next.js 16</span>
         </div>
       </aside>
