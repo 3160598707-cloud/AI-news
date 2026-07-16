@@ -110,22 +110,22 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#000510')
-          // 高清纹理 — 大陆边界清晰可见
-          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+          .backgroundColor('#020408')
+          // 陆地/海洋灰阶分明 — 陆地亮灰、海洋暗黑
+          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(false)
           .globeMaterial({
-            color: 0x8899bb,
-            emissive: 0x000408,
-            roughness: 0.55,
-            metalness: 0.1,
-            bumpScale: 0.03,
-            opacity: 0.92,
+            color: 0x888888,
+            emissive: 0x010203,
+            roughness: 0.5,
+            metalness: 0.08,
+            bumpScale: 0.02,
+            opacity: 0.9,
             transparent: true,
           })
-          .atmosphereColor('#0c1e38')
-          .atmosphereAltitude(0.22)
+          .atmosphereColor('#050d18')
+          .atmosphereAltitude(0.18)
           // 弧线 — 蓝绿色科技质感
           .arcsData(arcs)
           .arcColor((d: any) => {
@@ -199,15 +199,15 @@ export default function GlobeScene() {
               .polygonCapColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(30,80,180,0.3)' : 'rgba(15,25,50,0.1)';
+                return hasEvent ? 'rgba(40,40,40,0.35)' : 'rgba(15,15,18,0.1)';
               })
-              .polygonSideColor(() => 'rgba(20,40,80,0.06)')
+              .polygonSideColor(() => 'rgba(10,10,14,0.04)')
               .polygonStrokeColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(80,180,255,0.55)' : 'rgba(50,100,180,0.35)';
+                return hasEvent ? 'rgba(120,180,210,0.45)' : 'rgba(70,80,90,0.25)';
               })
-              .polygonAltitude(0.006)
+              .polygonAltitude(0.003)
               .polygonLabel((d: any) => {
                 const name = d.properties?.name || '';
                 const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
@@ -215,10 +215,10 @@ export default function GlobeScene() {
                 const city = ev?.city || '';
                 const label = city && city !== name ? `${name} · ${city}` : name;
                 if (count > 0) {
-                  return `<div style="background:rgba(5,10,25,0.92);padding:5px 12px;border-radius:8px;border:1px solid rgba(100,180,255,0.3);color:#d0e4ff;font-size:12px;font-weight:600;white-space:nowrap">
-                    ${label}<br><span style="font-size:10px;color:#4dc9f6">${count} 事件</span></div>`;
+                  return `<div style="background:rgba(8,8,8,0.92);padding:4px 10px;border-radius:4px;border:1px solid rgba(255,255,255,0.12);color:#ccc;font-size:11px;font-weight:500;white-space:nowrap;letter-spacing:0.02em">
+                    ${label}<br><span style="font-size:9px;color:#888">${count} 事件</span></div>`;
                 }
-                return `<div style="color:rgba(180,210,255,0.5);font-size:11px;font-weight:500">${name}</div>`;
+                return `<div style="color:rgba(255,255,255,0.25);font-size:10px;letter-spacing:0.04em">${name}</div>`;
               });
           }
         } catch { /* graceful */ }
@@ -233,10 +233,10 @@ export default function GlobeScene() {
             .htmlElement((d: any) => {
               const el = document.createElement('div');
               el.innerHTML = `<div style="
-                background:rgba(5,10,25,0.85);color:#c0dcff;font-size:9px;
-                padding:2px 8px;border-radius:8px;white-space:nowrap;
-                border:1px solid rgba(80,160,240,0.2);
-                pointer-events:none;font-weight:500;letter-spacing:0.03em;
+                background:rgba(12,12,12,0.88);color:#aaa;font-size:9px;
+                padding:2px 7px;border-radius:3px;white-space:nowrap;
+                border:1px solid rgba(255,255,255,0.08);
+                pointer-events:none;font-weight:400;letter-spacing:0.05em;
                 transform:translate(-50%,-130%);
               ">${d.city}</div>`;
               return el;
@@ -252,7 +252,7 @@ export default function GlobeScene() {
           .ringsData(ringData)
           .ringLat('lat')
           .ringLng('lng')
-          .ringColor(() => 'rgba(60,160,240,0.2)')
+          .ringColor(() => 'rgba(180,190,200,0.12)')
           .ringMaxRadius('ringRadius')
           .ringPropagationSpeed(0.5)
           .ringRepeatPeriod(2200);
