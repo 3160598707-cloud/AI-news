@@ -110,18 +110,21 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#000a14')
-          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+          .backgroundColor('#e8ecf0')
+          // Apple Maps 风格 — 浅色大地 + 淡蓝海洋
+          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(false)
           .globeMaterial({
-            roughness: 0.5,
-            metalness: 0.1,
-            bumpScale: 0.04,
-            opacity: 0.9,
+            color: 0xffffff,
+            emissive: 0x222222,
+            roughness: 0.35,
+            metalness: 0.02,
+            bumpScale: 0.025,
+            opacity: 1,
           })
-          .atmosphereColor('#1a2a40')
-          .atmosphereAltitude(0.22)
+          .atmosphereColor('#c8d6e5')
+          .atmosphereAltitude(0.15)
           .arcsData(arcs)
           .arcColor((d: any) => d.color || '#ffffff')
           .arcAltitude(0.38)
@@ -189,13 +192,13 @@ export default function GlobeScene() {
               .polygonCapColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(30,60,120,0.3)' : 'rgba(10,20,40,0.15)';
+                return hasEvent ? 'rgba(60,120,200,0.2)' : 'rgba(200,200,200,0.08)';
               })
-              .polygonSideColor(() => 'rgba(20,40,80,0.08)')
+              .polygonSideColor(() => 'rgba(180,190,200,0.06)')
               .polygonStrokeColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(100,180,255,0.3)' : 'rgba(40,70,120,0.15)';
+                return hasEvent ? 'rgba(40,100,180,0.35)' : 'rgba(150,160,170,0.2)';
               })
               .polygonAltitude(0.005)
               .polygonLabel((d: any) => {
@@ -205,9 +208,9 @@ export default function GlobeScene() {
                 const city = ev?.city || '';
                 const label = city && city !== name ? `${name} · ${city}` : name;
                 return count > 0
-                  ? `<div style="background:rgba(0,10,30,0.85);padding:4px 10px;border-radius:6px;border:1px solid rgba(100,180,255,0.3);color:#fff;font-size:12px;font-weight:600;white-space:nowrap">
-                     ${label}<br><span style="font-size:10px;color:#6af">${count} 事件</span></div>`
-                  : `<div style="color:rgba(255,255,255,0.4);font-size:10px">${name}</div>`;
+                  ? `<div style="background:rgba(255,255,255,0.9);padding:3px 8px;border-radius:6px;border:1px solid rgba(0,0,0,0.1);color:#222;font-size:11px;font-weight:600;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.1)">
+                     ${label}<br><span style="font-size:9px;color:#36c">${count} 事件</span></div>`
+                  : `<div style="color:rgba(0,0,0,0.35);font-size:10px">${name}</div>`;
               });
           }
         } catch { /* graceful */ }
@@ -222,11 +225,11 @@ export default function GlobeScene() {
             .htmlElement((d: any) => {
               const el = document.createElement('div');
               el.innerHTML = `<div style="
-                background:rgba(0,5,20,0.8);color:#fff;font-size:10px;
-                padding:2px 8px;border-radius:10px;white-space:nowrap;
-                border:1px solid rgba(255,255,255,0.15);
-                pointer-events:none;font-weight:500;
-                transform:translate(-50%,-130%);
+                background:rgba(255,255,255,0.85);color:#111;font-size:9px;
+                padding:2px 7px;border-radius:8px;white-space:nowrap;
+                border:1px solid rgba(0,0,0,0.08);
+                pointer-events:none;font-weight:600;
+                transform:translate(-50%,-130%);box-shadow:0 1px 2px rgba(0,0,0,0.1);
               ">${d.city}</div>`;
               return el;
             })
