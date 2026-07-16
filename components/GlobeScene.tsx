@@ -110,24 +110,18 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#000000')
-          // 高精 NASA Blue Marble 8K 纹理
-          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+          .backgroundColor('#000a14')
+          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(false)
-          // 黑白高对比材质
           .globeMaterial({
-            color: 0xcccccc,
-            emissive: 0x000000,
-            roughness: 0.4,
-            metalness: 0.05,
-            bumpScale: 0.05,
-            opacity: 0.95,
-            transparent: true,
+            roughness: 0.5,
+            metalness: 0.1,
+            bumpScale: 0.04,
+            opacity: 0.9,
           })
-          .atmosphereColor('#555')
-          .atmosphereAltitude(0.2)
-          // Arc lines — connecting same-category events globally
+          .atmosphereColor('#1a2a40')
+          .atmosphereAltitude(0.22)
           .arcsData(arcs)
           .arcColor((d: any) => d.color || '#ffffff')
           .arcAltitude(0.38)
@@ -185,7 +179,7 @@ export default function GlobeScene() {
         globeRef.current = globe;
         setGlobeStatus('ready');
 
-        // Load country polygon outlines — local GeoJSON (no external dependency)
+        // Load country polygons with clear labels
         try {
           const geoRes = await fetch('/countries.geojson');
           if (geoRes.ok) {
@@ -193,30 +187,55 @@ export default function GlobeScene() {
             (globe as any)
               .polygonsData(countries.features)
               .polygonCapColor((d: any) => {
-                // Highlight countries with events
                 const name = d.properties?.name || '';
-                const hasEvent = evs.some(e => {
-                  const c = e.country || '';
-                  return c.includes(name) || name.includes(c);
-                });
-                return hasEvent ? 'rgba(40,80,140,0.25)' : 'rgba(15,25,50,0.12)';
+                const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
+                return hasEvent ? 'rgba(30,60,120,0.3)' : 'rgba(10,20,40,0.15)';
               })
-              .polygonSideColor(() => 'rgba(30,50,90,0.06)')
+              .polygonSideColor(() => 'rgba(20,40,80,0.08)')
               .polygonStrokeColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(120,180,240,0.2)' : 'rgba(60,90,140,0.1)';
+                return hasEvent ? 'rgba(100,180,255,0.3)' : 'rgba(40,70,120,0.15)';
               })
-              .polygonAltitude(0.003)
+              .polygonAltitude(0.005)
               .polygonLabel((d: any) => {
                 const name = d.properties?.name || '';
                 const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
-                return count > 0 ? `<b>${name}</b> · ${count}事件` : name;
+                const ev = evs.find(e => (e.country||'').includes(name)||name.includes(e.country||''));
+                const city = ev?.city || '';
+                const label = city && city !== name ? `${name} · ${city}` : name;
+                return count > 0
+                  ? `<div style="background:rgba(0,10,30,0.85);padding:4px 10px;border-radius:6px;border:1px solid rgba(100,180,255,0.3);color:#fff;font-size:12px;font-weight:600;white-space:nowrap">
+                     ${label}<br><span style="font-size:10px;color:#6af">${count} 事件</span></div>`
+                  : `<div style="color:rgba(255,255,255,0.4);font-size:10px">${name}</div>`;
               });
           }
-        } catch { /* graceful fallback */ }
+        } catch { /* graceful */ }
 
-        // Add ring effects around event points (pulsing animation)
+        // Add city/capital name labels floating on the globe
+        try {
+          const cityLabels = evs.map(e => ({
+            lat: e.lat, lng: e.lng, city: e.city, country: e.country,
+          }));
+          (globe as any)
+            .htmlElementsData(cityLabels)
+            .htmlElement((d: any) => {
+              const el = document.createElement('div');
+              el.innerHTML = `<div style="
+                background:rgba(0,5,20,0.8);color:#fff;font-size:10px;
+                padding:2px 8px;border-radius:10px;white-space:nowrap;
+                border:1px solid rgba(255,255,255,0.15);
+                pointer-events:none;font-weight:500;
+                transform:translate(-50%,-130%);
+              ">${d.city}</div>`;
+              return el;
+            })
+            .htmlLat('lat')
+            .htmlLng('lng')
+            .htmlAltitude(0.05);
+        } catch {}
+
+        // Add ring effects around event points
         const ringData = evs.map(e => ({ ...e, ringRadius: 0.8 + Math.random() * 1.2 }));
         (globe as any)
           .ringsData(ringData)
