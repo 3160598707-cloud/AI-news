@@ -56,5 +56,29 @@ npm run dev:local          # 启动 http://127.0.0.1:3001
 - ✅ 第 7 阶段：PWA（可安装、离线缓存）
 - ✅ 第 8 阶段：通知（AI 分析完成推送）
 - ✅ 第 9 阶段：语音日报（Web Speech TTS）
+- ✅ CI/CD：GitHub Actions + Vercel 自动部署
+
+## 部署
+
+### Vercel（推荐，免费）
+
+1. 访问 [vercel.com](https://vercel.com) → 用 GitHub 登录
+2. 点击 **New Project** → 导入 `3160598707-cloud/AI-news`
+3. 设置环境变量：`DEEPSEEK_API_KEY` = `你的Key`
+4. 点击 **Deploy** → 自动构建并上线
+5. 每次 `git push` 自动重新部署
+
+### GitHub Actions 自动化
+
+| 工作流 | 触发条件 | 说明 |
+|--------|----------|------|
+| `ci.yml` | Push / PR | 构建 + 类型检查 |
+| `daily-ingest.yml` | 每日 UTC 00:00 | RSS 采集 + 数据更新 |
+
+### 所需 Secrets
+
+在 GitHub → Settings → Secrets and variables → Actions 添加：
+
+- `DEEPSEEK_API_KEY`：DeepSeek API 密钥
 
 ## 全部 9 阶段已完成 🎉
