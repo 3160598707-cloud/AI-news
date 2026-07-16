@@ -111,19 +111,31 @@ export default function GlobeScene() {
           .width(w)
           .height(h)
           .backgroundColor('#000000')
-          .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg')
-          .globeMaterial({ color: 0x888888, emissive: 0x000000, roughness: 0.9, metalness: 0, opacity: 0.85 })
-          .atmosphereColor('#444')
-          .atmosphereAltitude(0.18)
-          // Arc lines — thicker, brighter, always visible
+          // 高精 NASA Blue Marble 8K 纹理
+          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+          .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+          .showGraticules(false)
+          // 黑白高对比材质
+          .globeMaterial({
+            color: 0xcccccc,
+            emissive: 0x000000,
+            roughness: 0.4,
+            metalness: 0.05,
+            bumpScale: 0.05,
+            opacity: 0.95,
+            transparent: true,
+          })
+          .atmosphereColor('#555')
+          .atmosphereAltitude(0.2)
+          // Arc lines — connecting same-category events globally
           .arcsData(arcs)
           .arcColor((d: any) => d.color || '#ffffff')
-          .arcAltitude(0.35)
-          .arcStroke(1.2)
-          .arcDashLength(0.5)
-          .arcDashGap(0.08)
-          .arcDashAnimateTime(2000)
-          .arcsTransitionDuration(0)
+          .arcAltitude(0.38)
+          .arcStroke(1.4)
+          .arcDashLength(0.55)
+          .arcDashGap(0.06)
+          .arcDashAnimateTime(1800)
+          .arcsTransitionDuration(800)
           .arcLabel((d: any) => {
             const cat = d.category || '';
             return `<b>${cat}</b> 事件连线`;
@@ -161,6 +173,14 @@ export default function GlobeScene() {
         globe.controls().enableZoom = true;
         globe.controls().minDistance = 160;
         globe.controls().maxDistance = 550;
+
+        // 高像素比渲染 — 清晰锐利
+        try {
+          const renderer = (globe as any).renderer();
+          if (renderer) {
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          }
+        } catch {}
 
         globeRef.current = globe;
         setGlobeStatus('ready');
