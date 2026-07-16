@@ -101,32 +101,43 @@ export default function GlobeScene() {
         }
 
         const el = globeEl.current!;
-        // Ensure container has explicit size for iOS
         el.style.width = w + 'px';
         el.style.height = h + 'px';
+
+        // Build enhanced arc connections — link all events of same category
+        const arcs = buildArcs(evs);
+
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#000000')
-          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-          .atmosphereColor('#111')
-          .atmosphereAltitude(0.2)
-          // Arc lines between same-category events
-          .arcsData(buildArcs(evs))
+          .backgroundColor('#000a14')
+          .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-dark.jpg')
+          .bumpImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png')
+          .atmosphereColor('#1a2a4a')
+          .atmosphereAltitude(0.22)
+          // Arc lines
+          .arcsData(arcs)
           .arcColor((d: any) => d.color)
-          .arcAltitude(0.25)
-          .arcStroke(0.6)
-          .arcDashLength(0.3)
-          .arcDashGap(0.1)
-          .arcDashAnimateTime(3000)
+          .arcAltitude(0.28)
+          .arcStroke(0.7)
+          .arcDashLength(0.4)
+          .arcDashGap(0.15)
+          .arcDashAnimateTime(2500)
+          .arcsTransitionDuration(0)
+          // Event points
           .pointsData(evs)
           .pointLat('lat')
           .pointLng('lng')
           .pointColor('color')
-          .pointAltitude(0.015)
-          .pointRadius(0.35)
+          .pointAltitude(0.02)
+          .pointRadius((d: any) => {
+            const cat = d.category || '';
+            return ['战争','军事'].some(c => cat.includes(c)) ? 0.45 : 0.3;
+          })
           .pointLabel((d: any) =>
-            `<b>${d.category}</b><br/>${d.title}<br/><small>📍 ${d.city}, ${d.country}</small>`
+            `<b style="font-size:13px">${d.category}</b><br/>
+             <span style="font-size:14px;line-height:1.3">${d.title}</span><br/>
+             <small style="opacity:0.7">📍 ${d.city}, ${d.country}</small>`
           )
           .onPointClick((point: any) => {
             setSelected(point);
@@ -135,27 +146,55 @@ export default function GlobeScene() {
           });
 
         globe.controls().autoRotate = true;
-        globe.controls().autoRotateSpeed = 0.4;
+        globe.controls().autoRotateSpeed = 0.35;
         globe.controls().enableZoom = true;
-        globe.controls().minDistance = 150;
-        globe.controls().maxDistance = 600;
+        globe.controls().minDistance = 160;
+        globe.controls().maxDistance = 550;
 
         globeRef.current = globe;
         setGlobeStatus('ready');
 
-        // Load country polygon outlines
+        // Load country polygon outlines — local GeoJSON (no external dependency)
         try {
-          const geoRes = await fetch('https://unpkg.com/three-globe/example/geo-data/ne_110m_admin_0_countries.geojson');
+          const geoRes = await fetch('/countries.geojson');
           if (geoRes.ok) {
             const countries = await geoRes.json();
             (globe as any)
               .polygonsData(countries.features)
-              .polygonCapColor(() => 'rgba(20,40,80,0.15)')
-              .polygonSideColor(() => 'rgba(30,50,90,0.08)')
-              .polygonStrokeColor(() => 'rgba(100,160,220,0.12)')
-              .polygonAltitude(0.001);
+              .polygonCapColor((d: any) => {
+                // Highlight countries with events
+                const name = d.properties?.name || '';
+                const hasEvent = evs.some(e => {
+                  const c = e.country || '';
+                  return c.includes(name) || name.includes(c);
+                });
+                return hasEvent ? 'rgba(40,80,140,0.25)' : 'rgba(15,25,50,0.12)';
+              })
+              .polygonSideColor(() => 'rgba(30,50,90,0.06)')
+              .polygonStrokeColor((d: any) => {
+                const name = d.properties?.name || '';
+                const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
+                return hasEvent ? 'rgba(120,180,240,0.2)' : 'rgba(60,90,140,0.1)';
+              })
+              .polygonAltitude(0.003)
+              .polygonLabel((d: any) => {
+                const name = d.properties?.name || '';
+                const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
+                return count > 0 ? `<b>${name}</b> · ${count}事件` : name;
+              });
           }
-        } catch { /* GeoJSON unavailable — borders skipped gracefully */ }
+        } catch { /* graceful fallback */ }
+
+        // Add ring effects around event points (pulsing animation)
+        const ringData = evs.map(e => ({ ...e, ringRadius: 0.8 + Math.random() * 1.2 }));
+        (globe as any)
+          .ringsData(ringData)
+          .ringLat('lat')
+          .ringLng('lng')
+          .ringColor(() => 'rgba(120,180,255,0.15)')
+          .ringMaxRadius('ringRadius')
+          .ringPropagationSpeed(0.6)
+          .ringRepeatPeriod(2000);
 
         const handleResize = () => {
           if (globeEl.current) {
