@@ -110,54 +110,62 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#e8ecf0')
-          // Apple Maps 风格 — 浅色大地 + 淡蓝海洋
-          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+          .backgroundColor('#000000')
+          // 深空科技风 — 暗色地球 + PBR材质
+          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(false)
           .globeMaterial({
-            color: 0xffffff,
-            emissive: 0x222222,
-            roughness: 0.35,
-            metalness: 0.02,
-            bumpScale: 0.025,
-            opacity: 1,
+            color: 0x3366aa,
+            emissive: 0x000000,
+            roughness: 0.45,
+            metalness: 0.15,
+            bumpScale: 0.035,
+            opacity: 0.95,
+            transparent: true,
           })
-          .atmosphereColor('#c8d6e5')
-          .atmosphereAltitude(0.15)
+          // 双层大气发光
+          .atmosphereColor('#0a1e3d')
+          .atmosphereAltitude(0.25)
+          // 弧线 — 蓝绿色科技质感
           .arcsData(arcs)
-          .arcColor((d: any) => d.color || '#ffffff')
-          .arcAltitude(0.38)
-          .arcStroke(1.4)
-          .arcDashLength(0.55)
-          .arcDashGap(0.06)
-          .arcDashAnimateTime(1800)
-          .arcsTransitionDuration(800)
-          .arcLabel((d: any) => {
+          .arcColor((d: any) => {
             const cat = d.category || '';
-            return `<b>${cat}</b> 事件连线`;
+            if (cat.includes('军事')) return '#ff5566';
+            if (cat.includes('财经')) return '#ffb347';
+            if (cat.includes('科技')) return '#4dc9f6';
+            return '#88ccff';
           })
-          // Event points — white with category glow
+          .arcAltitude(0.4)
+          .arcStroke(1.6)
+          .arcDashLength(0.6)
+          .arcDashGap(0.04)
+          .arcDashAnimateTime(1600)
+          .arcsTransitionDuration(600)
+          .arcLabel((d: any) => `${d.category || ''} · 事件链路`)
+          // 事件点 — 发光标记
           .pointsData(evs)
           .pointLat('lat')
           .pointLng('lng')
           .pointColor((d: any) => {
             const cat = d.category || '';
-            if (cat.includes('军事')||cat.includes('战争')) return '#ff4444';
-            if (cat.includes('财经')||cat.includes('金融')) return '#ffaa00';
-            if (cat.includes('科技')) return '#44aaff';
-            if (cat.includes('民生')) return '#44ff88';
-            return '#ffffff';
+            if (cat.includes('军事')||cat.includes('战争')) return '#ff4455';
+            if (cat.includes('财经')||cat.includes('金融')) return '#ffaa33';
+            if (cat.includes('科技')) return '#44bbff';
+            if (cat.includes('民生')) return '#44dd88';
+            return '#aaccff';
           })
-          .pointAltitude(0.025)
+          .pointAltitude(0.03)
           .pointRadius((d: any) => {
             const cat = d.category || '';
-            return ['军事','战争','财经'].some(c => cat.includes(c)) ? 0.5 : 0.35;
+            return ['军事','战争'].some(c => cat.includes(c)) ? 0.55 : 0.4;
           })
           .pointLabel((d: any) =>
-            `<b style="font-size:13px;color:#fff">${d.category}</b><br/>
-             <span style="font-size:14px;line-height:1.3;color:#fff">${d.title}</span><br/>
-             <small style="opacity:0.6">📍 ${d.city}, ${d.country}</small>`
+            `<div style="background:rgba(5,10,25,0.92);padding:6px 12px;border-radius:8px;border:1px solid rgba(100,180,255,0.2);color:#e0ecff;font-size:12px;line-height:1.4;max-width:220px">
+              <b style="color:#4dc9f6">${d.category}</b><br/>
+              ${d.title}<br/>
+              <small style="opacity:0.5">📍 ${d.city}, ${d.country}</small>
+            </div>`
           )
           .onPointClick((point: any) => {
             setSelected(point);
@@ -192,15 +200,15 @@ export default function GlobeScene() {
               .polygonCapColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(60,120,200,0.2)' : 'rgba(200,200,200,0.08)';
+                return hasEvent ? 'rgba(20,60,140,0.35)' : 'rgba(8,15,30,0.12)';
               })
-              .polygonSideColor(() => 'rgba(180,190,200,0.06)')
+              .polygonSideColor(() => 'rgba(15,30,60,0.06)')
               .polygonStrokeColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(40,100,180,0.35)' : 'rgba(150,160,170,0.2)';
+                return hasEvent ? 'rgba(60,140,220,0.4)' : 'rgba(30,60,100,0.15)';
               })
-              .polygonAltitude(0.005)
+              .polygonAltitude(0.004)
               .polygonLabel((d: any) => {
                 const name = d.properties?.name || '';
                 const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
@@ -208,9 +216,9 @@ export default function GlobeScene() {
                 const city = ev?.city || '';
                 const label = city && city !== name ? `${name} · ${city}` : name;
                 return count > 0
-                  ? `<div style="background:rgba(255,255,255,0.9);padding:3px 8px;border-radius:6px;border:1px solid rgba(0,0,0,0.1);color:#222;font-size:11px;font-weight:600;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.1)">
-                     ${label}<br><span style="font-size:9px;color:#36c">${count} 事件</span></div>`
-                  : `<div style="color:rgba(0,0,0,0.35);font-size:10px">${name}</div>`;
+                  ? `<div style="background:rgba(5,10,25,0.9);padding:4px 10px;border-radius:6px;border:1px solid rgba(80,160,240,0.3);color:#d0e4ff;font-size:11px;font-weight:600;white-space:nowrap">
+                     ${label}<br><span style="font-size:9px;color:#4dc9f6">${count} 事件</span></div>`
+                  : `<div style="color:rgba(200,220,255,0.3);font-size:10px">${name}</div>`;
               });
           }
         } catch { /* graceful */ }
@@ -225,11 +233,11 @@ export default function GlobeScene() {
             .htmlElement((d: any) => {
               const el = document.createElement('div');
               el.innerHTML = `<div style="
-                background:rgba(255,255,255,0.85);color:#111;font-size:9px;
-                padding:2px 7px;border-radius:8px;white-space:nowrap;
-                border:1px solid rgba(0,0,0,0.08);
-                pointer-events:none;font-weight:600;
-                transform:translate(-50%,-130%);box-shadow:0 1px 2px rgba(0,0,0,0.1);
+                background:rgba(5,10,25,0.85);color:#c0dcff;font-size:9px;
+                padding:2px 8px;border-radius:8px;white-space:nowrap;
+                border:1px solid rgba(80,160,240,0.2);
+                pointer-events:none;font-weight:500;letter-spacing:0.03em;
+                transform:translate(-50%,-130%);
               ">${d.city}</div>`;
               return el;
             })
@@ -239,15 +247,15 @@ export default function GlobeScene() {
         } catch {}
 
         // Add ring effects around event points
-        const ringData = evs.map(e => ({ ...e, ringRadius: 0.8 + Math.random() * 1.2 }));
+        const ringData = evs.map(e => ({ ...e, ringRadius: 0.9 + Math.random() * 1.5 }));
         (globe as any)
           .ringsData(ringData)
           .ringLat('lat')
           .ringLng('lng')
-          .ringColor(() => 'rgba(120,180,255,0.15)')
+          .ringColor(() => 'rgba(60,160,240,0.2)')
           .ringMaxRadius('ringRadius')
-          .ringPropagationSpeed(0.6)
-          .ringRepeatPeriod(2000);
+          .ringPropagationSpeed(0.5)
+          .ringRepeatPeriod(2200);
 
         const handleResize = () => {
           if (globeEl.current) {
