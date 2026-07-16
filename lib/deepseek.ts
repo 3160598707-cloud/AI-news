@@ -93,11 +93,12 @@ ${eventList}
 export async function generateDailyReport(events: Array<{ title: string; category: string; summary: string }>) {
   if (events.length === 0) return '今日无事件，无法生成日报。'
 
+  const today = new Date().toISOString().slice(0, 10)
   const eventList = events
     .map((e, i) => `${i + 1}. [${e.category}] ${e.title}`)
     .join('\n')
 
-  const prompt = `你是 AI World Monitor 的日报生成器。今日事件：
+  const prompt = `今天是 ${today}（2026年7月17日）。你是 AI World Monitor 的日报生成器。今日事件：
 
 ${eventList}
 

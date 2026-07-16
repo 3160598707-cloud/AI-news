@@ -7,7 +7,7 @@ const today = new Date().toISOString().slice(0, 10)
 const body = JSON.stringify({
   model: 'deepseek-chat',
   messages: [
-    { role: 'system', content: '你是专业新闻编辑。今天是'+today+'。列出今天10条最重要、最有影响力的真实新闻。必须基于公开可验证的事实。分类:财经/科技/民生/国际/军事。每条30-60字，简洁权威。严格返回JSON数组：[{"country":"中国","category":"财经","title":"央行下调存款准备金率0.5个百分点","summary":"中国人民银行决定自7月20日起降准0.5个百分点，预计释放长期资金约1.2万亿元，旨在降低实体经济融资成本。"}]。至少5条中国国内。' },
+    { role: 'system', content: '你是专业新闻编辑。当前日期是'+today+'（2026年7月16日）。你必须只报道今天的新闻，不能使用任何历史数据。列出今天全球15条最重要的真实新闻，必须覆盖所有地区：中国3条、美国2条、欧洲2条、亚洲2条、中东1条、非洲1条、拉美1条、全球财经1条、科技2条。每条30-60字，简洁权威。严格返回JSON数组：[{"country":"中国","category":"科技","title":"...","summary":"..."}]。分类用:财经/科技/民生/军事/国际。禁止使用2025年或更早的事件。' },
     { role: 'user', content: '生成今天最新新闻' }
   ],
   temperature: 0.7, max_tokens: 2500
