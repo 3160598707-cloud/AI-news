@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 const GlobeScene = dynamic(() => import('../components/GlobeScene'), { ssr: false });
 const WorldClock = dynamic(() => import('../components/WorldClock'), { ssr: false });
 const ChartsPanel = dynamic(() => import('../components/ChartsPanel'), { ssr: false });
+const CryptoTicker = dynamic(() => import('../components/CryptoTicker'), { ssr: false });
 
 export default function Home() {
   const [analysis, setAnalysis] = useState('');
@@ -121,6 +122,7 @@ export default function Home() {
         </div>
 
         <WorldClock />
+        <CryptoTicker />
 
         <div className="sidebar-section sidebar-meta">
           <span>DeepSeek AI · Next.js 16</span>

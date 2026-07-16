@@ -457,3 +457,23 @@ body::before {
 @media (max-width: 640px) {
   .globe-legend { gap: 0.5rem; font-size: 0.6rem; padding: 0.25rem 0.6rem; bottom: 2.8rem; }
 }
+
+/* ===== Crypto Ticker ===== */
+.crypto-list { display: flex; flex-direction: column; gap: 0.2rem; }
+.crypto-item {
+  display: grid; grid-template-columns: 20px 40px 1fr 60px;
+  align-items: center; padding: 0.25rem 0; font-size: 0.75rem;
+  gap: 0.3rem;
+}
+.crypto-symbol { font-size: 0.8rem; }
+.crypto-label { color: var(--muted); font-size: 0.65rem; }
+.crypto-price { text-align: right; font-weight: 600; }
+.crypto-change { text-align: right; font-size: 0.7rem; }
+
+/* ===== Data Export ===== */
+.export-btn {
+  display: inline-block; padding: 0.25rem 0.6rem; border-radius: 4px;
+  border: 1px solid var(--border); color: var(--muted); text-decoration: none;
+  font-size: 0.7rem; transition: all 0.15s;
+}
+.export-btn:hover { border-color: var(--accent); color: var(--accent); }
