@@ -66,11 +66,11 @@ export default function DailyPage() {
     <>
       <Head><title>AI 日报 — AI World Monitor</title></Head>
       <header className="hero">
-        <h1>📰 AI 日报</h1>
-        <p>由 DeepSeek 自动生成 · 基于实时事件分析</p>
+        <h1>DAILY REPORT</h1>
+        <p>DeepSeek AI · real-time analysis</p>
         {report && (
           <button className="btn" onClick={speak}>
-            {speaking ? '⏹ 停止' : '🔊 AI 语音朗读'}
+            {speaking ? 'STOP' : 'TTS'}
           </button>
         )}
       </header>

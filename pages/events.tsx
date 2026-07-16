@@ -16,6 +16,7 @@ export default function EventsPage() {
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[] | null>(null)
   const [refreshing, setRefreshing] = useState(false)
+  const [lastUpdated, setLastUpdated] = useState('')
 
   const refreshNews = async () => {
     setRefreshing(true)
@@ -32,6 +33,7 @@ export default function EventsPage() {
       const data = await res.json()
       setEvents(data.events || [])
       setCount((data.events || []).length)
+      setLastUpdated(new Date().toLocaleTimeString())
     } catch { } finally { setLoading(false) }
   }
 
@@ -60,10 +62,10 @@ export default function EventsPage() {
     <>
       <Head><title>事件列表 — AI World Monitor</title></Head>
       <header className="hero">
-        <h1>📡 全球事件</h1>
-        <p>共 {displayCount} 个事件 · 搜索或筛选</p>
+        <h1>GLOBAL EVENTS</h1>
+        <p>{displayCount} events{lastUpdated ? ` · updated ${lastUpdated}` : ''}</p>
         <div className="search-bar">
-          <span className="search-icon">🔍</span>
+          <span className="search-icon">/</span>
           <input
             type="text"
             className="search-input"
@@ -88,9 +90,9 @@ export default function EventsPage() {
             {cat}
           </button>
         ))}
-        <button className="filter-chip" onClick={loadEvents} title="刷新列表">🔄</button>
+        <button className="filter-chip" onClick={loadEvents} title="刷新列表">REFRESH</button>
         <button className="filter-chip" onClick={refreshNews} disabled={refreshing} title="RSS采集">
-          {refreshing ? '⏳' : '📡'} 采集
+          {refreshing ? '...' : 'INGEST'}
         </button>
       </div>
 

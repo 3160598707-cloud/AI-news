@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 
 const clocks = [
-  { label: '纽约', tz: 'America/New_York', flag: '🇺🇸' },
-  { label: '伦敦', tz: 'Europe/London', flag: '🇬🇧' },
-  { label: '北京', tz: 'Asia/Shanghai', flag: '🇨🇳' },
-  { label: '东京', tz: 'Asia/Tokyo', flag: '🇯🇵' },
-  { label: '迪拜', tz: 'Asia/Dubai', flag: '🇦🇪' },
-  { label: 'UTC', tz: 'UTC', flag: '🌐' },
+  { label: 'NYC', tz: 'America/New_York' },
+  { label: 'LON', tz: 'Europe/London' },
+  { label: 'BEI', tz: 'Asia/Shanghai' },
+  { label: 'TYO', tz: 'Asia/Tokyo' },
+  { label: 'DXB', tz: 'Asia/Dubai' },
+  { label: 'UTC', tz: 'UTC' },
 ]
 
 function getTime(tz: string) {
@@ -22,11 +22,10 @@ export default function WorldClock() {
 
   return (
     <div className="sidebar-section">
-      <h2>🕐 世界时钟</h2>
+      <h2>WORLD CLOCK</h2>
       <div className="clock-grid">
         {clocks.map(c => (
           <div key={c.tz} className="clock-item">
-            <span className="clock-flag">{c.flag}</span>
             <span className="clock-label">{c.label}</span>
             <span className="clock-time">{getTime(c.tz)}</span>
           </div>

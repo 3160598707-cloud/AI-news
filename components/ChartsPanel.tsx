@@ -15,7 +15,7 @@ export default function ChartsPanel({ data }: Props) {
 
   return (
     <div className="sidebar-section">
-      <h2>📊 事件分布</h2>
+      <h2>DISTRIBUTION</h2>
       <div style={{ width: '100%', height: 160 }}>
         <ResponsiveContainer>
           <PieChart>

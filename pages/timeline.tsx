@@ -21,8 +21,8 @@ export default function TimelinePage() {
     <>
       <Head><title>时间轴 — AI World Monitor</title></Head>
       <header className="hero">
-        <h1>📅 全球事件时间轴</h1>
-        <p>{events.length} 个事件 · 按时间排列</p>
+        <h1>TIMELINE</h1>
+        <p>{events.length} events</p>
       </header>
 
       {loading && <p className="loading">⏳ 加载中...</p>}

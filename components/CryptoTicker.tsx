@@ -24,7 +24,7 @@ export default function CryptoTicker() {
 
   return (
     <div className="sidebar-section">
-      <h2>💹 加密货币</h2>
+      <h2>CRYPTO</h2>
       <div className="crypto-list">
         {coins.map(c => {
           const d = data[c.id]

@@ -54,7 +54,7 @@ export default function Home() {
         {/* Header */}
         <div className="sidebar-section" style={{ borderColor: 'rgba(0,200,220,0.2)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <h2 style={{ margin: 0 }}>◆ COMMAND CENTER</h2>
+            <h2 style={{ margin: 0 }}>COMMAND CENTER</h2>
             <span className="live-dot" />
           </div>
           <p className="analysis-text" style={{ fontSize: '0.7rem', marginTop: '0.3rem' }}>
@@ -64,17 +64,17 @@ export default function Home() {
 
         {/* AI Analysis */}
         <div className="sidebar-section">
-          <h2>🤖 AI 态势</h2>
+          <h2>AI ANALYSIS</h2>
           {analysis ? <p className="analysis-text">{analysis}</p> : <p className="muted">加载中...</p>}
           <button className="btn btn-glass btn-block" onClick={loadAnalysis} disabled={loading}>
-            {loading ? '⏳' : '🔄'} 刷新
+            {loading ? '...' : 'REFRESH'}
           </button>
         </div>
 
         {/* Risk Index */}
         {risk && (
           <div className="sidebar-section">
-            <h2>⚠️ 风险指数</h2>
+            <h2>RISK INDEX</h2>
             <div className="risk-meter">
               <span className="risk-score" style={{ color: risk.score > 70 ? '#ff4d4f' : risk.score > 40 ? '#f7b500' : '#2ecc71' }}>
                 {risk.score}
@@ -90,7 +90,7 @@ export default function Home() {
         {/* Country Ranking */}
         {rankings.length > 0 && (
           <div className="sidebar-section">
-            <h2>🔥 国家热度</h2>
+            <h2>HOTSPOTS</h2>
             <div className="rank-list">
               {rankings.map((r: any, i: number) => (
                 <div key={r.name} className="rank-item">
@@ -106,18 +106,18 @@ export default function Home() {
         {/* Prediction */}
         {prediction && (
           <div className="sidebar-section">
-            <h2>🔮 AI 预测</h2>
+            <h2>PREDICTION</h2>
             <p className="analysis-text" style={{ whiteSpace: 'pre-wrap' }}>{prediction}</p>
           </div>
         )}
 
         {/* Navigation */}
         <div className="sidebar-section">
-          <h2>📡 导航</h2>
+          <h2>NAVIGATION</h2>
           <nav className="sidebar-nav">
-            <a href="/events" className="sidebar-link">📡 事件列表</a>
-            <a href="/timeline" className="sidebar-link">📅 时间轴</a>
-            <a href="/daily" className="sidebar-link">📰 AI 日报</a>
+            <a href="/events" className="sidebar-link">EVENTS</a>
+            <a href="/timeline" className="sidebar-link">TIMELINE</a>
+            <a href="/daily" className="sidebar-link">DAILY REPORT</a>
           </nav>
         </div>
 
