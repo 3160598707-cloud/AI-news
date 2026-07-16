@@ -124,17 +124,16 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#050b14')
-          // 高精纹理 — 黑灰大陆 + 深灰蓝海洋
+          .backgroundColor('#0a1018')
           .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(true)
           .globeMaterial({
-            color: 0x667788,
-            emissive: 0x020408,
-            roughness: 0.65,
-            metalness: 0.08,
-            bumpScale: 0.05,
+            color: 0x889999,
+            emissive: 0x111111,
+            roughness: 0.55,
+            metalness: 0.06,
+            bumpScale: 0.04,
             opacity: 0.95,
           })
           // 蓝色薄大气层
