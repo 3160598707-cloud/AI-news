@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
 
-const categories = ['全部', '战争', '能源', '科技', '政治', '商业', '自然灾害', '网络安全']
+const categories = ['全部','国际','战争','外交','能源','科技','AI','金融','股市','商业','自然灾害','公共卫生','网络安全','跨境电商','供应链','中国','美国','欧洲','亚洲','中东','非洲']
 const catColors: Record<string, string> = {
   '战争': '#ffffff', '能源': '#cccccc', '科技': '#00c8dc',
   '政治': '#999999', '商业': '#aaaaaa', '自然灾害': '#888888', '网络安全': '#666666'

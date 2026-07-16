@@ -9,6 +9,11 @@ type EventItem = {
   summary: string;
   color: string;
   timestamp?: string;
+  source?: string;
+  riskLevel?: string;
+  impact?: number;
+  tags?: string[];
+  link?: string;
 };
 
 import { existsSync, readFileSync, writeFileSync } from 'fs'

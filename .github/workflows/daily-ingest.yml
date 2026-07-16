@@ -1,15 +1,14 @@
-name: 🤖 Daily News — RSS + AI Auto Refresh
+name: 🤖 全球新闻 — 30分钟自动刷新
 
 on:
   schedule:
-    - cron: '0 0 * * *'        # UTC 00:00 每天自动运行
-    - cron: '0 12 * * *'       # UTC 12:00 每天第二次
-  workflow_dispatch:            # 支持手动触发
+    - cron: '*/30 * * * *'      # 每30分钟
+  workflow_dispatch:
 
 jobs:
-  daily:
+  news:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
@@ -21,34 +20,33 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: 📦 Install dependencies
-        run: npm ci
+      - name: 📦 Install
+        run: npm ci 2>&1 | tail -1
 
-      - name: 📡 Step 1 — RSS 全球采集 (40+ 源)
-        run: node scripts/ingest_rss_standalone.js
-        env:
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-
-      - name: 🤖 Step 2 — DeepSeek AI 新闻生成
-        run: node scripts/fetch_realtime_news.js
+      - name: 📡 新闻引擎 v3 — 采集+解析+去重+AI
+        run: node scripts/news_engine.js
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
 
       - name: 🔨 Build 验证
-        run: npm run build
+        run: npm run build 2>&1 | tail -3
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
 
-      - name: 📊 提交更新
+      - name: 📊 报告
+        run: cat data/report.json 2>/dev/null || echo "无报告"
+
+      - name: 📰 Commit & Push
         run: |
           git config user.name "ai-monitor-bot"
           git config user.email "bot@aimonitor.local"
-          git add data/events.json
+          git add data/events.json data/report.json
           if git diff --cached --quiet; then
-            echo "✅ 无新事件"
+            echo "✅ 无变更"
           else
             COUNT=$(node -e "console.log(require('./data/events.json').length)")
-            git commit -m "📰 $(date -u +%Y-%m-%d) 日报 — ${COUNT} 条全球事件"
+            LATEST=$(node -e "console.log(require('./data/events.json')[0]?.timestamp?.slice(0,19)||'N/A')")
+            git commit -m "📰 $(date -u +%m-%d\ %H:%M) — ${COUNT}条 | 最新: ${LATEST}"
             git push
-            echo "✅ 已推送 ${COUNT} 条事件"
+            echo "✅ 推送成功"
           fi
