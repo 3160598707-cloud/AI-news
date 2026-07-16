@@ -3,8 +3,5 @@
   "outputDirectory": ".next",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["hkg1"],
-  "env": {
-    "DEEPSEEK_API_KEY": "@deepseek-api-key"
-  }
+  "regions": ["hkg1"]
 }
