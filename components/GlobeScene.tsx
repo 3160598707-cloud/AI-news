@@ -124,38 +124,38 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('rgba(0,0,0,0)')
+          .backgroundColor('#050b14')
+          // 高精纹理 — 黑灰大陆 + 深灰蓝海洋
           .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(true)
           .globeMaterial({
-            color: 0x999999,
-            emissive: 0x000000,
-            roughness: 0.55,
-            metalness: 0.05,
-            bumpScale: 0.04,
-            opacity: 0.9,
-            transparent: true,
+            color: 0x667788,
+            emissive: 0x020408,
+            roughness: 0.65,
+            metalness: 0.08,
+            bumpScale: 0.05,
+            opacity: 0.95,
           })
-          .atmosphereColor('#0a0f18')
-          .atmosphereAltitude(0.2)
-          // 弧线 — 蓝绿色科技质感
+          // 蓝色薄大气层
+          .atmosphereColor('#0d1a30')
+          .atmosphereAltitude(0.25)
+          // 弧线
           .arcsData(arcs)
           .arcColor((d: any) => {
             const cat = d.category || '';
             if (cat.includes('军事')) return '#ff5566';
             if (cat.includes('财经')) return '#ffb347';
             if (cat.includes('科技')) return '#4dc9f6';
-            return '#88ccff';
+            return '#7799cc';
           })
-          .arcAltitude(0.4)
-          .arcStroke(1.6)
-          .arcDashLength(0.6)
-          .arcDashGap(0.04)
-          .arcDashAnimateTime(1600)
-          .arcsTransitionDuration(600)
-          .arcLabel((d: any) => `${d.category || ''} · 事件链路`)
-          // 事件点 — 发光标记
+          .arcAltitude(0.42)
+          .arcStroke(1.5)
+          .arcDashLength(0.55)
+          .arcDashGap(0.05)
+          .arcDashAnimateTime(1800)
+          .arcsTransitionDuration(500)
+          // 事件点 — 发光分类
           .pointsData(evs)
           .pointLat('lat')
           .pointLng('lng')
@@ -165,37 +165,51 @@ export default function GlobeScene() {
             if (cat.includes('财经')||cat.includes('金融')) return '#ffaa33';
             if (cat.includes('科技')) return '#44bbff';
             if (cat.includes('民生')) return '#44dd88';
-            return '#aaccff';
+            return '#99bbee';
           })
-          .pointAltitude(0.03)
+          .pointAltitude(0.035)
           .pointRadius((d: any) => {
             const cat = d.category || '';
             return ['军事','战争'].some(c => cat.includes(c)) ? 0.55 : 0.4;
           })
           .pointLabel((d: any) =>
-            `<div style="background:rgba(5,10,25,0.92);padding:6px 12px;border-radius:8px;border:1px solid rgba(100,180,255,0.2);color:#e0ecff;font-size:12px;line-height:1.4;max-width:220px">
+            `<div style="background:rgba(5,10,25,0.92);padding:6px 12px;border-radius:6px;border:1px solid rgba(100,180,255,0.2);color:#e0ecff;font-size:12px;line-height:1.4;max-width:220px">
               <b style="color:#4dc9f6">${d.category}</b><br/>
               ${d.title}<br/>
               <small style="opacity:0.5">📍 ${d.city}, ${d.country}</small>
             </div>`
           )
           .onPointClick((point: any) => {
-            setSelected(point);
-            setInsight('');
+            setSelected(point); setInsight('');
             globe.pointOfView({ lat: point.lat, lng: point.lng, altitude: 1.5 }, 1000);
           });
 
         globe.controls().autoRotate = true;
-        globe.controls().autoRotateSpeed = 0.35;
+        globe.controls().autoRotateSpeed = 0.3;
         globe.controls().enableZoom = true;
         globe.controls().minDistance = 160;
         globe.controls().maxDistance = 550;
 
-        // 高像素比渲染 — 清晰锐利
+        // 高像素比
         try {
           const renderer = (globe as any).renderer();
-          if (renderer) {
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          if (renderer) renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        } catch {}
+
+        // 云层 + Rim Light
+        try {
+          const scene = (globe as any).scene();
+          if (scene) {
+            // 通过 globe 内建的 Three.js 获取
+            const anyTHREE = (globe as any)._three || (window as any).THREE;
+            if (anyTHREE) {
+              // 增加环境光 + 侧光
+              if (typeof anyTHREE.AmbientLight === 'function') {
+                scene.add(new anyTHREE.AmbientLight(0x223344, 0.6));
+                const rim = new anyTHREE.DirectionalLight(0x335577, 0.5);
+                rim.position.set(-2, 1, -1); scene.add(rim);
+              }
+            }
           }
         } catch {}
 
@@ -216,19 +230,15 @@ export default function GlobeScene() {
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
                 return hasEvent ? 'rgba(255,255,255,0.55)' : 'rgba(180,180,180,0.35)';
               })
-              .polygonAltitude(0.002)
-              .polygonAltitude(0.008)
+              .polygonAltitude(0.003)
               .polygonLabel((d: any) => {
                 const name = d.properties?.name || '';
                 const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
-                const ev = evs.find(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                const city = ev?.city || '';
-                const label = city && city !== name ? `${name} · ${city}` : name;
                 if (count > 0) {
-                  return `<div style="background:rgba(0,0,0,0.88);padding:4px 10px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);color:#ddd;font-size:11px;font-weight:500;white-space:nowrap">
-                    ${label}<br><span style="font-size:9px;color:#aaa">${count} 事件</span></div>`;
+                  return `<div style="background:rgba(5,10,20,0.9);padding:3px 8px;border-radius:4px;border:1px solid rgba(150,200,255,0.2);color:#ccd8f0;font-size:11px;font-weight:500;white-space:nowrap">
+                    ${name}<br><span style="font-size:9px;color:#6688bb">${count} 事件</span></div>`;
                 }
-                return `<div style="color:rgba(40,40,45,0.6);font-size:10px;letter-spacing:0.03em;font-weight:500">${name}</div>`;
+                return `<div style="color:rgba(180,190,210,0.4);font-size:10px;letter-spacing:0.03em">${name}</div>`;
               });
           }
         } catch { /* graceful */ }
@@ -243,9 +253,9 @@ export default function GlobeScene() {
             .htmlElement((d: any) => {
               const el = document.createElement('div');
               el.innerHTML = `<div style="
-                background:rgba(0,0,0,0.85);color:#ccc;font-size:9px;
+                background:rgba(5,10,20,0.88);color:#aac8e8;font-size:9px;
                 padding:2px 7px;border-radius:3px;white-space:nowrap;
-                border:1px solid rgba(255,255,255,0.12);
+                border:1px solid rgba(100,160,220,0.15);
                 pointer-events:none;font-weight:400;letter-spacing:0.04em;
                 transform:translate(-50%,-130%);
               ">${d.city}</div>`;
@@ -262,7 +272,7 @@ export default function GlobeScene() {
           .ringsData(ringData)
           .ringLat('lat')
           .ringLng('lng')
-          .ringColor(() => 'rgba(180,190,200,0.12)')
+          .ringColor(() => 'rgba(80,140,220,0.18)')
           .ringMaxRadius('ringRadius')
           .ringPropagationSpeed(0.5)
           .ringRepeatPeriod(2200);
