@@ -208,8 +208,8 @@ export default function GlobeScene() {
 
       {/* Top bar */}
       <div className="globe-topbar">
-        <span className="globe-title">WORLD MONITOR</span>
-        <span className="globe-subtitle">{events.length} NODES</span>
+        <span className="globe-title">全球情报</span>
+        <span className="globe-subtitle">{events.length} 事件</span>
       </div>
 
       {/* Reset view button */}
@@ -231,7 +231,7 @@ export default function GlobeScene() {
               <button className="fav-btn" onClick={() => toggleFavorite(selected.id)} title="收藏">
                 {favorites.has(selected.id) ? '★' : '☆'}
               </button>
-              <button className="fav-btn" onClick={shareEvent} title="分享">SHARE</button>
+              <button className="fav-btn" onClick={shareEvent} title="分享">分享</button>
             </span>
           </div>
           <button
@@ -239,7 +239,7 @@ export default function GlobeScene() {
             onClick={analyzeEvent}
             disabled={insightLoading}
           >
-            {insightLoading ? '...' : 'AI ANALYSIS'}
+            {insightLoading ? '分析中...' : 'AI 分析'}
           </button>
           {insight && <p className="event-insight">{insight}</p>}
         </div>
@@ -263,12 +263,12 @@ export default function GlobeScene() {
               <p style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{(selected as EventItem).summary}</p>
               <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
                 <button className="btn btn-glass" onClick={analyzeEvent} disabled={insightLoading} style={{ flex: 1 }}>
-                  {insightLoading ? '...' : 'ANALYZE'}
+                  {insightLoading ? '...' : '分析'} AI
                 </button>
                 <button className="btn btn-glass" onClick={() => toggleFavorite((selected as EventItem).id)} style={{ flex: 1 }}>
-                  {favorites.has((selected as EventItem).id) ? '★' : '☆'} SAVE
+                  {favorites.has((selected as EventItem).id) ? '★' : '☆'} 收藏
                 </button>
-                <button className="btn btn-glass" onClick={shareEvent} style={{ flex: 1 }}>SHARE</button>
+                <button className="btn btn-glass" onClick={shareEvent} style={{ flex: 1 }}>分享</button>
               </div>
               {insight && <p style={{ marginTop: '0.6rem', fontSize: '0.8rem', color: 'var(--accent)' }}>{insight}</p>}
             </div>

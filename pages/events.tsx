@@ -37,7 +37,11 @@ export default function EventsPage() {
     } catch { } finally { setLoading(false) }
   }
 
-  useEffect(() => { loadEvents() }, [])
+  useEffect(() => {
+    loadEvents()
+    const id = setInterval(loadEvents, 60000)
+    return () => clearInterval(id)
+  }, [])
 
   // Debounced search
   useEffect(() => {
@@ -62,8 +66,8 @@ export default function EventsPage() {
     <>
       <Head><title>事件列表 — AI World Monitor</title></Head>
       <header className="hero">
-        <h1>GLOBAL EVENTS</h1>
-        <p>{displayCount} events{lastUpdated ? ` · updated ${lastUpdated}` : ''}</p>
+        <h1>全球事件</h1>
+        <p>{displayCount} 事件{lastUpdated ? ` · 更新于 ${lastUpdated}` : ''}</p>
         <div className="search-bar">
           <span className="search-icon">/</span>
           <input
@@ -90,9 +94,9 @@ export default function EventsPage() {
             {cat}
           </button>
         ))}
-        <button className="filter-chip" onClick={loadEvents} title="刷新列表">REFRESH</button>
-        <button className="filter-chip" onClick={refreshNews} disabled={refreshing} title="RSS采集">
-          {refreshing ? '...' : 'INGEST'}
+        <button className="filter-chip" onClick={loadEvents}>刷新</button>
+        <button className="filter-chip" onClick={refreshNews} disabled={refreshing}>
+          {refreshing ? '...' : '采集'}
         </button>
       </div>
 

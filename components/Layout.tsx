@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 const navItems = [
-  { href: '/', label: 'GLOBE', title: '全球态势' },
-  { href: '/events', label: 'EVENTS', title: '事件列表' },
-  { href: '/timeline', label: 'TIMELINE', title: '时间轴' },
-  { href: '/daily', label: 'REPORT', title: 'AI 日报' },
+  { href: '/', label: '地球', title: '全球态势' },
+  { href: '/events', label: '事件', title: '事件列表' },
+  { href: '/timeline', label: '时间轴', title: '时间轴' },
+  { href: '/daily', label: '日报', title: 'AI 日报' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {

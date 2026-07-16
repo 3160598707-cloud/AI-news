@@ -66,8 +66,8 @@ export default function DailyPage() {
     <>
       <Head><title>AI 日报 — AI World Monitor</title></Head>
       <header className="hero">
-        <h1>DAILY REPORT</h1>
-        <p>DeepSeek AI · real-time analysis</p>
+        <h1>AI 日报</h1>
+        <p>DeepSeek 实时分析</p>
         {report && (
           <button className="btn" onClick={speak}>
             {speaking ? 'STOP' : 'TTS'}

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 
 const clocks = [
-  { label: 'NYC', tz: 'America/New_York' },
-  { label: 'LON', tz: 'Europe/London' },
-  { label: 'BEI', tz: 'Asia/Shanghai' },
-  { label: 'TYO', tz: 'Asia/Tokyo' },
-  { label: 'DXB', tz: 'Asia/Dubai' },
+  { label: '纽约', tz: 'America/New_York' },
+  { label: '伦敦', tz: 'Europe/London' },
+  { label: '北京', tz: 'Asia/Shanghai' },
+  { label: '东京', tz: 'Asia/Tokyo' },
+  { label: '迪拜', tz: 'Asia/Dubai' },
   { label: 'UTC', tz: 'UTC' },
 ]
 
@@ -22,7 +22,7 @@ export default function WorldClock() {
 
   return (
     <div className="sidebar-section">
-      <h2>WORLD CLOCK</h2>
+      <h2>世界时钟</h2>
       <div className="clock-grid">
         {clocks.map(c => (
           <div key={c.tz} className="clock-item">
