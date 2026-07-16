@@ -8,10 +8,10 @@ const FEED_TIMEOUT_MS = 5000
 
 const feeds = [
   'https://feeds.bbci.co.uk/news/world/rss.xml',
-  'https://feeds.reuters.com/reuters/worldNews',
+  'https://www.theguardian.com/world/rss',
   'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-  'https://feeds.bloomberg.com/markets/news.rss',
-  'https://www.theguardian.com/world/rss'
+  'https://news.google.com/rss?hl=zh-CN&gl=CN&ceid=CN:zh-Hans',
+  'https://www.aljazeera.com/xml/rss/all.xml'
 ]
 
 const localFallbackFeed = join(process.cwd(), 'feeds', 'sample-rss.xml')

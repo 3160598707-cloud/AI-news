@@ -8,6 +8,7 @@ type EventItem = {
   title: string;
   summary: string;
   color: string;
+  timestamp?: string;
 };
 
 import { existsSync, readFileSync, writeFileSync } from 'fs'
