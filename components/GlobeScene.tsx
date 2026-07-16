@@ -125,20 +125,20 @@ export default function GlobeScene() {
           .width(w)
           .height(h)
           .backgroundColor('rgba(0,0,0,0)')
-          // 地球仪风格 — 亮白海洋 + 经纬线
-          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+          .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(true)
           .globeMaterial({
-            color: 0xcccccc,
-            emissive: 0x1a1a1a,
-            roughness: 0.35,
-            metalness: 0.02,
-            bumpScale: 0.01,
-            opacity: 0.88,
+            color: 0x999999,
+            emissive: 0x000000,
+            roughness: 0.55,
+            metalness: 0.05,
+            bumpScale: 0.04,
+            opacity: 0.9,
             transparent: true,
           })
-          .atmosphereColor('#1a1e24')
-          .atmosphereAltitude(0.16)
+          .atmosphereColor('#0a0f18')
+          .atmosphereAltitude(0.2)
           // 弧线 — 蓝绿色科技质感
           .arcsData(arcs)
           .arcColor((d: any) => {
@@ -209,15 +209,14 @@ export default function GlobeScene() {
             const countries = await geoRes.json();
             (globe as any)
               .polygonsData(countries.features)
-              .polygonCapColor((d: any) => {
-                return 'rgba(15,15,20,0.85)';
-              })
-              .polygonSideColor(() => 'rgba(10,10,14,0.9)')
+              .polygonCapColor(() => 'rgba(0,0,0,0)')
+              .polygonSideColor(() => 'rgba(0,0,0,0)')
               .polygonStrokeColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(255,255,255,0.45)' : 'rgba(200,200,200,0.3)';
+                return hasEvent ? 'rgba(255,255,255,0.55)' : 'rgba(180,180,180,0.35)';
               })
+              .polygonAltitude(0.002)
               .polygonAltitude(0.008)
               .polygonLabel((d: any) => {
                 const name = d.properties?.name || '';
