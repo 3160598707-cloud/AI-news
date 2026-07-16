@@ -42,10 +42,20 @@ const NEWS_SOURCES = [
   { url: 'https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms', name: 'Times of India', country: '印度', cat: '亚洲' },
   { url: 'https://www.straitstimes.com/news/asia/rss.xml', name: 'Straits Times', country: '新加坡', cat: '亚洲' },
 
-  // === 中国 ===
+  // === 中国（增强）===
   { url: 'https://rsshub.app/xinhua/whxw', name: '新华网', country: '中国', cat: '中国' },
+  { url: 'https://rsshub.app/people/rmw', name: '人民网', country: '中国', cat: '中国' },
   { url: 'https://rsshub.app/thepaper', name: '澎湃新闻', country: '中国', cat: '中国' },
+  { url: 'https://rsshub.app/huanqiu', name: '环球时报', country: '中国', cat: '中国' },
   { url: 'https://rsshub.app/caixin/latest', name: '财新', country: '中国', cat: '中国' },
+  { url: 'https://rsshub.app/36kr/motif/最新', name: '36氪', country: '中国', cat: '科技' },
+  { url: 'https://rsshub.app/chinanews/scroll', name: '中国新闻网', country: '中国', cat: '中国' },
+  { url: 'https://rsshub.app/cctv/world', name: '央视国际', country: '中国', cat: '中国' },
+  { url: 'https://rsshub.app/jiemian/lists/1', name: '界面新闻', country: '中国', cat: '商业' },
+  { url: 'https://rsshub.app/cls/depth', name: '财联社', country: '中国', cat: '财经' },
+  { url: 'https://rsshub.app/ifeng/news', name: '凤凰网', country: '中国', cat: '中国' },
+  { url: 'https://rsshub.app/sina/roll', name: '新浪滚动', country: '中国', cat: '中国' },
+  { url: 'https://rsshub.app/netease/today', name: '网易新闻', country: '中国', cat: '中国' },
 
   // === 欧洲 ===
   { url: 'https://rss.dw.com/rdf/rss-en-all', name: 'DW', country: '德国', cat: '欧洲' },
