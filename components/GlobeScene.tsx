@@ -35,6 +35,7 @@ export default function GlobeScene() {
   const [insightLoading, setInsightLoading] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [globeStatus, setGlobeStatus] = useState('initializing');
+  const isMobile = typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
   const retryCount = useRef(0);
 
   // Load favorites from localStorage
@@ -74,13 +75,14 @@ export default function GlobeScene() {
       const h = globeEl.current.clientHeight || window.innerHeight;
       if (w < 10 || h < 10) {
         retryCount.current++;
-        if (retryCount.current > 20) {
-          setGlobeStatus('failed');
+        if (retryCount.current > 20 || isMobile) {
+          setGlobeStatus(isMobile ? 'no-webgl' : 'failed');
           return;
         }
         setTimeout(initGlobe, 500);
         return;
       }
+      if (isMobile) { setGlobeStatus('no-webgl'); return; }
       setGlobeStatus('loading');
       try {
         const res = await fetch('/api/events');
@@ -242,17 +244,35 @@ export default function GlobeScene() {
           {insight && <p className="event-insight">{insight}</p>}
         </div>
       ) : globeStatus === 'no-webgl' ? (
-        <div className="event-card glass" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-          <span className="event-badge" style={{ background: 'var(--accent)' }}>MOBILE</span>
-          <h2>全球热点 ({events.length})</h2>
-          {events.slice(0, 10).map(ev => (
-            <div key={ev.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid var(--border)' }}
-                 onClick={() => setSelected(ev)}>
+        <div className="event-card glass" style={{ maxHeight: '70vh', overflowY: 'auto', position: 'absolute', top: '3.5rem', left: '0.8rem', right: '0.8rem', bottom: '3.5rem', maxWidth: 'none', width: 'auto' }}>
+          <span className="event-badge" style={{ background: 'var(--accent)' }}>📱 MOBILE</span>
+          <h2>全球热点 · {events.length} 事件</h2>
+          {events.slice(0, 12).map(ev => (
+            <div key={ev.id} className="mobile-event-item"
+                 onClick={() => { setSelected(ev); setInsight(''); }}
+                 style={{ padding: '0.6rem 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
               <span style={{ color: ev.color, fontSize: '0.65rem', textTransform: 'uppercase' }}>{ev.category}</span>
               <div style={{ fontWeight: 600, fontSize: '0.85rem', margin: '0.15rem 0' }}>{ev.title}</div>
               <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>📍 {ev.city}, {ev.country}</div>
             </div>
           ))}
+          {selected && (
+            <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(0,200,220,0.05)', borderRadius: 8, border: '1px solid var(--border)' }}>
+              <span style={{ color: (selected as EventItem).color, fontSize: '0.65rem' }}>{(selected as EventItem).category}</span>
+              <h3 style={{ margin: '0.3rem 0', fontSize: '1rem' }}>{(selected as EventItem).title}</h3>
+              <p style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{(selected as EventItem).summary}</p>
+              <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
+                <button className="btn btn-glass" onClick={analyzeEvent} disabled={insightLoading} style={{ flex: 1 }}>
+                  {insightLoading ? '⏳' : '🤖'} AI分析
+                </button>
+                <button className="btn btn-glass" onClick={() => toggleFavorite((selected as EventItem).id)} style={{ flex: 1 }}>
+                  {favorites.has((selected as EventItem).id) ? '⭐' : '☆'} 收藏
+                </button>
+                <button className="btn btn-glass" onClick={shareEvent} style={{ flex: 1 }}>↗ 分享</button>
+              </div>
+              {insight && <p style={{ marginTop: '0.6rem', fontSize: '0.8rem', color: 'var(--accent)' }}>{insight}</p>}
+            </div>
+          )}
         </div>
       ) : (
         <div className="event-card glass">
