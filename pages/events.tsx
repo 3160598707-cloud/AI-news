@@ -15,6 +15,15 @@ export default function EventsPage() {
   const [count, setCount] = useState(0)
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[] | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
+
+  const refreshNews = async () => {
+    setRefreshing(true)
+    try {
+      await fetch('/api/rss-ingest')
+      await loadEvents()
+    } catch { } finally { setRefreshing(false) }
+  }
 
   const loadEvents = async () => {
     setLoading(true)
@@ -79,8 +88,9 @@ export default function EventsPage() {
             {cat}
           </button>
         ))}
-        <button className="filter-chip" onClick={loadEvents} title="刷新">
-          🔄
+        <button className="filter-chip" onClick={loadEvents} title="刷新列表">🔄</button>
+        <button className="filter-chip" onClick={refreshNews} disabled={refreshing} title="RSS采集">
+          {refreshing ? '⏳' : '📡'} 采集
         </button>
       </div>
 

@@ -11,10 +11,18 @@ const LOCAL_FEED = join(__dirname, '..', 'feeds', 'sample-rss.xml')
 
 const REMOTE_FEEDS = [
   'https://feeds.bbci.co.uk/news/world/rss.xml',
-  'https://feeds.reuters.com/reuters/worldNews',
+  'https://www3.nhk.or.jp/rss/news/cat0.xml',
+  'https://news.google.com/rss?hl=zh-CN&gl=CN&ceid=CN:zh-Hans',
+  'https://www.theguardian.com/world/rss',
+  'https://rss.dw.com/rdf/rss-en-all',
+  'https://www.france24.com/en/rss',
   'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-  'https://feeds.bloomberg.com/markets/news.rss',
-  'https://www.theguardian.com/world/rss'
+  'https://www.cbc.ca/cmlink/rss-world',
+  'https://www.aljazeera.com/xml/rss/all.xml',
+  'https://allafrica.com/tools/headlines/rss.xml',
+  'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100727362',
+  'https://feeds.feedburner.com/TechCrunch/',
+  'https://www.wired.com/feed/rss'
 ]
 
 const FEED_TIMEOUT_MS = 8000
