@@ -110,22 +110,22 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#020408')
-          // 陆地/海洋灰阶分明 — 陆地亮灰、海洋暗黑
+          .backgroundColor('#0a1018')
+          // 陆地/海洋灰阶分明 — 提高亮度
           .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(false)
           .globeMaterial({
-            color: 0x888888,
-            emissive: 0x010203,
-            roughness: 0.5,
-            metalness: 0.08,
-            bumpScale: 0.02,
-            opacity: 0.9,
+            color: 0xbbbbbb,
+            emissive: 0x101010,
+            roughness: 0.4,
+            metalness: 0.04,
+            bumpScale: 0.025,
+            opacity: 0.93,
             transparent: true,
           })
-          .atmosphereColor('#050d18')
-          .atmosphereAltitude(0.18)
+          .atmosphereColor('#1a2432')
+          .atmosphereAltitude(0.2)
           // 弧线 — 蓝绿色科技质感
           .arcsData(arcs)
           .arcColor((d: any) => {
@@ -199,13 +199,13 @@ export default function GlobeScene() {
               .polygonCapColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(40,40,40,0.35)' : 'rgba(15,15,18,0.1)';
+                return hasEvent ? 'rgba(50,50,55,0.4)' : 'rgba(20,20,22,0.15)';
               })
               .polygonSideColor(() => 'rgba(10,10,14,0.04)')
               .polygonStrokeColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(120,180,210,0.45)' : 'rgba(70,80,90,0.25)';
+                return hasEvent ? 'rgba(150,200,230,0.5)' : 'rgba(110,120,130,0.35)';
               })
               .polygonAltitude(0.003)
               .polygonLabel((d: any) => {
