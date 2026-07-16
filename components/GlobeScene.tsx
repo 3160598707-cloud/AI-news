@@ -110,34 +110,45 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#000a14')
-          .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-dark.jpg')
-          .bumpImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png')
-          .atmosphereColor('#1a2a4a')
-          .atmosphereAltitude(0.22)
-          // Arc lines
+          .backgroundColor('#000000')
+          .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg')
+          .globeMaterial({ color: 0x888888, emissive: 0x000000, roughness: 0.9, metalness: 0, opacity: 0.85 })
+          .atmosphereColor('#444')
+          .atmosphereAltitude(0.18)
+          // Arc lines — thicker, brighter, always visible
           .arcsData(arcs)
-          .arcColor((d: any) => d.color)
-          .arcAltitude(0.28)
-          .arcStroke(0.7)
-          .arcDashLength(0.4)
-          .arcDashGap(0.15)
-          .arcDashAnimateTime(2500)
+          .arcColor((d: any) => d.color || '#ffffff')
+          .arcAltitude(0.35)
+          .arcStroke(1.2)
+          .arcDashLength(0.5)
+          .arcDashGap(0.08)
+          .arcDashAnimateTime(2000)
           .arcsTransitionDuration(0)
-          // Event points
+          .arcLabel((d: any) => {
+            const cat = d.category || '';
+            return `<b>${cat}</b> 事件连线`;
+          })
+          // Event points — white with category glow
           .pointsData(evs)
           .pointLat('lat')
           .pointLng('lng')
-          .pointColor('color')
-          .pointAltitude(0.02)
+          .pointColor((d: any) => {
+            const cat = d.category || '';
+            if (cat.includes('军事')||cat.includes('战争')) return '#ff4444';
+            if (cat.includes('财经')||cat.includes('金融')) return '#ffaa00';
+            if (cat.includes('科技')) return '#44aaff';
+            if (cat.includes('民生')) return '#44ff88';
+            return '#ffffff';
+          })
+          .pointAltitude(0.025)
           .pointRadius((d: any) => {
             const cat = d.category || '';
-            return ['战争','军事'].some(c => cat.includes(c)) ? 0.45 : 0.3;
+            return ['军事','战争','财经'].some(c => cat.includes(c)) ? 0.5 : 0.35;
           })
           .pointLabel((d: any) =>
-            `<b style="font-size:13px">${d.category}</b><br/>
-             <span style="font-size:14px;line-height:1.3">${d.title}</span><br/>
-             <small style="opacity:0.7">📍 ${d.city}, ${d.country}</small>`
+            `<b style="font-size:13px;color:#fff">${d.category}</b><br/>
+             <span style="font-size:14px;line-height:1.3;color:#fff">${d.title}</span><br/>
+             <small style="opacity:0.6">📍 ${d.city}, ${d.country}</small>`
           )
           .onPointClick((point: any) => {
             setSelected(point);
