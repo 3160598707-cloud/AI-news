@@ -110,23 +110,22 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#000000')
-          // 深空科技风 — 暗色地球 + PBR材质
-          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+          .backgroundColor('#000510')
+          // 高清纹理 — 大陆边界清晰可见
+          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(false)
           .globeMaterial({
-            color: 0x3366aa,
-            emissive: 0x000000,
-            roughness: 0.45,
-            metalness: 0.15,
-            bumpScale: 0.035,
-            opacity: 0.95,
+            color: 0x8899bb,
+            emissive: 0x000408,
+            roughness: 0.55,
+            metalness: 0.1,
+            bumpScale: 0.03,
+            opacity: 0.92,
             transparent: true,
           })
-          // 双层大气发光
-          .atmosphereColor('#0a1e3d')
-          .atmosphereAltitude(0.25)
+          .atmosphereColor('#0c1e38')
+          .atmosphereAltitude(0.22)
           // 弧线 — 蓝绿色科技质感
           .arcsData(arcs)
           .arcColor((d: any) => {
@@ -200,25 +199,26 @@ export default function GlobeScene() {
               .polygonCapColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(20,60,140,0.35)' : 'rgba(8,15,30,0.12)';
+                return hasEvent ? 'rgba(30,80,180,0.3)' : 'rgba(15,25,50,0.1)';
               })
-              .polygonSideColor(() => 'rgba(15,30,60,0.06)')
+              .polygonSideColor(() => 'rgba(20,40,80,0.06)')
               .polygonStrokeColor((d: any) => {
                 const name = d.properties?.name || '';
                 const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(60,140,220,0.4)' : 'rgba(30,60,100,0.15)';
+                return hasEvent ? 'rgba(80,180,255,0.55)' : 'rgba(50,100,180,0.35)';
               })
-              .polygonAltitude(0.004)
+              .polygonAltitude(0.006)
               .polygonLabel((d: any) => {
                 const name = d.properties?.name || '';
                 const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
                 const ev = evs.find(e => (e.country||'').includes(name)||name.includes(e.country||''));
                 const city = ev?.city || '';
                 const label = city && city !== name ? `${name} · ${city}` : name;
-                return count > 0
-                  ? `<div style="background:rgba(5,10,25,0.9);padding:4px 10px;border-radius:6px;border:1px solid rgba(80,160,240,0.3);color:#d0e4ff;font-size:11px;font-weight:600;white-space:nowrap">
-                     ${label}<br><span style="font-size:9px;color:#4dc9f6">${count} 事件</span></div>`
-                  : `<div style="color:rgba(200,220,255,0.3);font-size:10px">${name}</div>`;
+                if (count > 0) {
+                  return `<div style="background:rgba(5,10,25,0.92);padding:5px 12px;border-radius:8px;border:1px solid rgba(100,180,255,0.3);color:#d0e4ff;font-size:12px;font-weight:600;white-space:nowrap">
+                    ${label}<br><span style="font-size:10px;color:#4dc9f6">${count} 事件</span></div>`;
+                }
+                return `<div style="color:rgba(180,210,255,0.5);font-size:11px;font-weight:500">${name}</div>`;
               });
           }
         } catch { /* graceful */ }
