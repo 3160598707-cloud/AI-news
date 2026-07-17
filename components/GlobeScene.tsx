@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
-import * as THREE from 'three';
 
 interface EventItem {
   id: string; city: string; country: string;
@@ -35,9 +34,6 @@ export default function GlobeScene() {
   const [insight, setInsight] = useState('');
   const [insightLoading, setInsightLoading] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [globeStatus, setGlobeStatus] = useState('initializing');
-  const isMobile = typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-  const retryCount = useRef(0);
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -67,200 +63,68 @@ export default function GlobeScene() {
 
   useEffect(() => {
     if (!globeEl.current) return;
-    let destroyed = false;
 
-    const initGlobe = async () => {
-      if (destroyed || !globeEl.current) return;
-      // Force dimensions on mobile — use window if container is 0
-      const w = globeEl.current.clientWidth || window.innerWidth;
-      const h = globeEl.current.clientHeight || window.innerHeight;
-      if (w < 10 || h < 10) {
-        retryCount.current++;
-        if (retryCount.current > 20 || isMobile) {
-          setGlobeStatus(isMobile ? 'no-webgl' : 'failed');
-          return;
-        }
-        setTimeout(initGlobe, 500);
-        return;
-      }
-      if (isMobile) { setGlobeStatus('no-webgl'); return; }
-      setGlobeStatus('loading');
+    (async () => {
       try {
         const res = await fetch('/api/events');
         const data = await res.json();
         const evs = (data.events || []) as EventItem[];
         setEvents(evs);
-        if (evs.length === 0) { setGlobeStatus('failed'); return; }
+        if (evs.length === 0) return;
         setSelected(evs[0]);
 
-        // Check WebGL support
-        const testCanvas = document.createElement('canvas');
-        const gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
-        if (!gl) {
-          setGlobeStatus('no-webgl');
-          return;
-        }
-
         const el = globeEl.current!;
-        el.style.width = w + 'px';
-        el.style.height = h + 'px';
-
-        // 星空背景
-        const starCanvas = document.createElement('canvas');
-        starCanvas.width = w; starCanvas.height = h;
-        starCanvas.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none';
-        const sctx = starCanvas.getContext('2d')!;
-        sctx.fillStyle = '#020408'; sctx.fillRect(0, 0, w, h);
-        for (let i = 0; i < 300; i++) {
-          const sx = Math.random() * w, sy = Math.random() * h;
-          const sr = Math.random() * 1.2 + 0.3;
-          const alpha = Math.random() * 0.6 + 0.2;
-          sctx.fillStyle = `rgba(255,255,255,${alpha})`;
-          sctx.beginPath(); sctx.arc(sx, sy, sr, 0, Math.PI * 2); sctx.fill();
-        }
-        el.appendChild(starCanvas);
-
-        const arcs = buildArcs(evs);
-
         const globe = new Globe(el)
-          .width(w)
-          .height(h)
-          .backgroundColor('rgba(0,0,0,0)')
-          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
-          .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-          .showGraticules(false)
-          .globeMaterial({
-            roughness: 0.6,
-            metalness: 0.03,
-            bumpScale: 0.02,
-            opacity: 0.88,
-            transparent: true,
-          } as any)
-          .atmosphereColor('#0a0f18')
-          .atmosphereAltitude(0.15)
-          // 弧线
-          .arcsData(arcs)
-          .arcColor((d: any) => {
-            const cat = d.category || '';
-            if (cat.includes('军事')) return '#ff5566';
-            if (cat.includes('财经')) return '#ffb347';
-            if (cat.includes('科技')) return '#4dc9f6';
-            return '#7799cc';
-          })
-          .arcAltitude(0.42)
-          .arcStroke(1.5)
-          .arcDashLength(0.55)
-          .arcDashGap(0.05)
-          .arcDashAnimateTime(1800)
-          .arcsTransitionDuration(500)
-          // 事件点 — 发光分类
+          .width(el.clientWidth)
+          .height(el.clientHeight)
+          .backgroundColor('#000000')
+          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+          .atmosphereColor('#111')
+          .atmosphereAltitude(0.2)
+          // Arc lines between same-category events
+          .arcsData(buildArcs(evs))
+          .arcColor((d: any) => d.color)
+          .arcAltitude(0.25)
+          .arcStroke(0.6)
+          .arcDashLength(0.3)
+          .arcDashGap(0.1)
+          .arcDashAnimateTime(3000)
           .pointsData(evs)
           .pointLat('lat')
           .pointLng('lng')
-          .pointColor((d: any) => {
-            const cat = d.category || '';
-            if (cat.includes('军事')||cat.includes('战争')) return '#ff4455';
-            if (cat.includes('财经')||cat.includes('金融')) return '#ffaa33';
-            if (cat.includes('科技')) return '#44bbff';
-            if (cat.includes('民生')) return '#44dd88';
-            return '#99bbee';
-          })
-          .pointAltitude(0.035)
-          .pointRadius((d: any) => {
-            const cat = d.category || '';
-            return ['军事','战争'].some(c => cat.includes(c)) ? 0.55 : 0.4;
-          })
+          .pointColor('color')
+          .pointAltitude(0.015)
+          .pointRadius(0.35)
           .pointLabel((d: any) =>
-            `<div style="background:rgba(5,10,25,0.92);padding:6px 12px;border-radius:6px;border:1px solid rgba(100,180,255,0.2);color:#e0ecff;font-size:12px;line-height:1.4;max-width:220px">
-              <b style="color:#4dc9f6">${d.category}</b><br/>
-              ${d.title}<br/>
-              <small style="opacity:0.5">📍 ${d.city}, ${d.country}</small>
-            </div>`
+            `<b>${d.category}</b><br/>${d.title}<br/><small>📍 ${d.city}, ${d.country}</small>`
           )
           .onPointClick((point: any) => {
-            setSelected(point); setInsight('');
+            setSelected(point);
+            setInsight('');
             globe.pointOfView({ lat: point.lat, lng: point.lng, altitude: 1.5 }, 1000);
           });
 
         globe.controls().autoRotate = true;
-        globe.controls().autoRotateSpeed = 0.3;
+        globe.controls().autoRotateSpeed = 0.4;
         globe.controls().enableZoom = true;
-        globe.controls().minDistance = 160;
-        globe.controls().maxDistance = 550;
-
-        // 高像素比
-        try {
-          const renderer = (globe as any).renderer();
-          if (renderer) renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        } catch {}
-
-        // 基础环境光
-        try {
-          const scene = (globe as any).scene();
-          if (scene) {
-            scene.add(new THREE.AmbientLight(0x223344, 0.5));
-          }
-        } catch(e){}
+        globe.controls().minDistance = 150;
+        globe.controls().maxDistance = 600;
 
         globeRef.current = globe;
-        setGlobeStatus('ready');
 
-        // Load country polygons with clear labels
+        // Load country polygon outlines
         try {
-          const geoRes = await fetch('/countries.geojson');
+          const geoRes = await fetch('https://unpkg.com/three-globe/example/geo-data/ne_110m_admin_0_countries.geojson');
           if (geoRes.ok) {
             const countries = await geoRes.json();
             (globe as any)
               .polygonsData(countries.features)
-              .polygonCapColor(() => 'rgba(8,10,15,0.85)')
-              .polygonSideColor(() => 'rgba(5,6,10,0.9)')
-              .polygonStrokeColor(() => 'rgba(180,190,200,0.35)')
-              .polygonAltitude(0.003)
-              .polygonLabel((d: any) => {
-                const name = d.properties?.name || '';
-                const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
-                if (count > 0) {
-                  return `<div style="background:rgba(5,10,20,0.9);padding:3px 8px;border-radius:4px;border:1px solid rgba(150,200,255,0.2);color:#ccd8f0;font-size:11px;font-weight:500;white-space:nowrap">
-                    ${name}<br><span style="font-size:9px;color:#6688bb">${count} 事件</span></div>`;
-                }
-                return `<div style="color:rgba(180,190,210,0.4);font-size:10px;letter-spacing:0.03em">${name}</div>`;
-              });
+              .polygonCapColor(() => 'rgba(20,40,80,0.15)')
+              .polygonSideColor(() => 'rgba(30,50,90,0.08)')
+              .polygonStrokeColor(() => 'rgba(100,160,220,0.12)')
+              .polygonAltitude(0.001);
           }
-        } catch { /* graceful */ }
-
-        // Add city/capital name labels floating on the globe
-        try {
-          const cityLabels = evs.map(e => ({
-            lat: e.lat, lng: e.lng, city: e.city, country: e.country,
-          }));
-          (globe as any)
-            .htmlElementsData(cityLabels)
-            .htmlElement((d: any) => {
-              const el = document.createElement('div');
-              el.innerHTML = `<div style="
-                background:rgba(5,10,20,0.88);color:#aac8e8;font-size:9px;
-                padding:2px 7px;border-radius:3px;white-space:nowrap;
-                border:1px solid rgba(100,160,220,0.15);
-                pointer-events:none;font-weight:400;letter-spacing:0.04em;
-                transform:translate(-50%,-130%);
-              ">${d.city}</div>`;
-              return el;
-            })
-            .htmlLat('lat')
-            .htmlLng('lng')
-            .htmlAltitude(0.05);
-        } catch {}
-
-        // Add ring effects around event points
-        const ringData = evs.map(e => ({ ...e, ringRadius: 0.9 + Math.random() * 1.5 }));
-        (globe as any)
-          .ringsData(ringData)
-          .ringLat('lat')
-          .ringLng('lng')
-          .ringColor(() => 'rgba(80,140,220,0.18)')
-          .ringMaxRadius('ringRadius')
-          .ringPropagationSpeed(0.5)
-          .ringRepeatPeriod(2200);
+        } catch { /* GeoJSON unavailable — borders skipped gracefully */ }
 
         const handleResize = () => {
           if (globeEl.current) {
@@ -274,14 +138,9 @@ export default function GlobeScene() {
           globe._destructor?.();
         };
       } catch (err) {
-        console.error('Globe init failed', err);
-        setGlobeStatus('failed');
+        console.error('Failed to load events', err);
       }
-    };
-
-    const cleanup = () => { destroyed = true; };
-    initGlobe();
-    return cleanup;
+    })();
   }, []);
 
   const resetView = () => {
@@ -313,8 +172,8 @@ export default function GlobeScene() {
 
       {/* Top bar */}
       <div className="globe-topbar">
-        <span className="globe-title">全球情报</span>
-        <span className="globe-subtitle">{events.length} 事件</span>
+        <span className="globe-title">AI World Monitor</span>
+        <span className="globe-subtitle">{events.length} 个全球热点</span>
       </div>
 
       {/* Reset view button */}
@@ -334,9 +193,9 @@ export default function GlobeScene() {
             <span>📍 {selected.city}, {selected.country}</span>
             <span style={{ display: 'flex', gap: '0.3rem' }}>
               <button className="fav-btn" onClick={() => toggleFavorite(selected.id)} title="收藏">
-                {favorites.has(selected.id) ? '★' : '☆'}
+                {favorites.has(selected.id) ? '⭐' : '☆'}
               </button>
-              <button className="fav-btn" onClick={shareEvent} title="分享">分享</button>
+              <button className="fav-btn" onClick={shareEvent} title="分享">↗</button>
             </span>
           </div>
           <button
@@ -344,46 +203,13 @@ export default function GlobeScene() {
             onClick={analyzeEvent}
             disabled={insightLoading}
           >
-            {insightLoading ? '分析中...' : 'AI 分析'}
+            {insightLoading ? '⏳ AI 分析中...' : '🤖 AI 深度分析'}
           </button>
           {insight && <p className="event-insight">{insight}</p>}
         </div>
-      ) : globeStatus === 'no-webgl' ? (
-        <div className="event-card glass" style={{ maxHeight: '70vh', overflowY: 'auto', position: 'absolute', top: '3.5rem', left: '0.8rem', right: '0.8rem', bottom: '3.5rem', maxWidth: 'none', width: 'auto' }}>
-          <span className="event-badge" style={{ background: 'var(--accent)' }}>📱 MOBILE</span>
-          <h2>全球热点 · {events.length} 事件</h2>
-          {events.slice(0, 12).map(ev => (
-            <div key={ev.id} className="mobile-event-item"
-                 onClick={() => { setSelected(ev); setInsight(''); }}
-                 style={{ padding: '0.6rem 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
-              <span style={{ color: ev.color, fontSize: '0.65rem', textTransform: 'uppercase' }}>{ev.category}</span>
-              <div style={{ fontWeight: 600, fontSize: '0.85rem', margin: '0.15rem 0' }}>{ev.title}</div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>📍 {ev.city}, {ev.country}</div>
-            </div>
-          ))}
-          {selected && (
-            <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(0,200,220,0.05)', borderRadius: 8, border: '1px solid var(--border)' }}>
-              <span style={{ color: (selected as EventItem).color, fontSize: '0.65rem' }}>{(selected as EventItem).category}</span>
-              <h3 style={{ margin: '0.3rem 0', fontSize: '1rem' }}>{(selected as EventItem).title}</h3>
-              <p style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{(selected as EventItem).summary}</p>
-              <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
-                <button className="btn btn-glass" onClick={analyzeEvent} disabled={insightLoading} style={{ flex: 1 }}>
-                  {insightLoading ? '...' : '分析'} AI
-                </button>
-                <button className="btn btn-glass" onClick={() => toggleFavorite((selected as EventItem).id)} style={{ flex: 1 }}>
-                  {favorites.has((selected as EventItem).id) ? '★' : '☆'} 收藏
-                </button>
-                <button className="btn btn-glass" onClick={shareEvent} style={{ flex: 1 }}>分享</button>
-              </div>
-              {insight && <p style={{ marginTop: '0.6rem', fontSize: '0.8rem', color: 'var(--accent)' }}>{insight}</p>}
-            </div>
-          )}
-        </div>
       ) : (
         <div className="event-card glass">
-          <p className="muted">
-            {globeStatus === 'failed' ? '⚠️ 地球渲染失败，请检查 WebGL 支持' : '正在初始化 3D 地球...'}
-          </p>
+          <p className="muted">正在加载全球事件...</p>
         </div>
       )}
 
