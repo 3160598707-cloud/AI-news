@@ -66,7 +66,7 @@ export default function GlobeScene() {
 
     (async () => {
       try {
-        const res = await fetch('/api/events');
+        const res = await fetch('/AI-news/api/events.json');
         const data = await res.json();
         const evs = (data.events || []) as EventItem[];
         setEvents(evs);
@@ -163,7 +163,7 @@ export default function GlobeScene() {
     setInsightLoading(true);
     setInsight('');
     try {
-      const res = await fetch('/api/analyze', {
+      const res = await fetch('/AI-news/api/analyze.json', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify([selected])

@@ -18,7 +18,7 @@ export default function Home() {
   const loadAnalysis = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/analyze');
+      const res = await fetch('/AI-news/api/analyze.json');
       const data = await res.json();
       setAnalysis(data.analysis || '');
       if (data.analysis && 'Notification' in window && Notification.permission === 'granted') {
@@ -33,11 +33,11 @@ export default function Home() {
       Notification.requestPermission();
     }
     // Load risk index
-    fetch('/api/risk-index').then(r => r.json()).then(setRisk).catch(() => {});
+    fetch('/AI-news/api/risk-index.json').then(r => r.json()).then(setRisk).catch(() => {});
     // Load prediction
-    fetch('/api/prediction').then(r => r.json()).then(d => setPrediction(d.prediction || '')).catch(() => {});
+    fetch('/AI-news/api/prediction.json').then(r => r.json()).then(d => setPrediction(d.prediction || '')).catch(() => {});
     // Load stats
-    fetch('/api/stats').then(r => r.json()).then(d => {
+    fetch('/AI-news/api/stats.json').then(r => r.json()).then(d => {
       setRankings(d.countryRanking?.slice(0, 5) || []);
       setCategoryDist(d.categoryDistribution || []);
       setEventCount(d.total || 0);

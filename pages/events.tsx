@@ -21,7 +21,7 @@ export default function EventsPage() {
   const refreshNews = async () => {
     setRefreshing(true)
     try {
-      await fetch('/api/rss-ingest')
+      await fetch('/AI-news/api/rss-ingest.json')
       await loadEvents()
     } catch { } finally { setRefreshing(false) }
   }
@@ -29,7 +29,7 @@ export default function EventsPage() {
   const loadEvents = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/events')
+      const res = await fetch('/AI-news/api/events.json')
       const data = await res.json()
       setEvents(data.events || [])
       setCount((data.events || []).length)

@@ -10,12 +10,12 @@ export default function CryptoTicker() {
   const [data, setData] = useState<any>(null)
 
   useEffect(() => {
-    fetch('/api/crypto')
+    fetch('/AI-news/api/crypto.json')
       .then(r => r.json())
       .then(setData)
       .catch(() => {})
     const id = setInterval(() => {
-      fetch('/api/crypto').then(r => r.json()).then(setData).catch(() => {})
+      fetch('/AI-news/api/crypto.json').then(r => r.json()).then(setData).catch(() => {})
     }, 60000)
     return () => clearInterval(id)
   }, [])

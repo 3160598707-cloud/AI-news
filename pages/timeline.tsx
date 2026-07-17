@@ -9,7 +9,7 @@ export default function TimelinePage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/events')
+        const res = await fetch('/AI-news/api/events.json')
         const data = await res.json()
         setEvents(data.events || [])
       } catch { /* */ }

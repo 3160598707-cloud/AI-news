@@ -27,7 +27,7 @@ export default function DailyPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/daily-report')
+        const res = await fetch('/AI-news/api/daily-report.json')
         const data = await res.json()
         if (data.report) {
           setRawText(data.report)
