@@ -78,7 +78,7 @@ export default function GlobeScene() {
           .width(el.clientWidth)
           .height(el.clientHeight)
           .backgroundColor('#000000')
-          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+          .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-dark.jpg')
           .showGraticules(true)
           .atmosphereColor('#111')
           .atmosphereAltitude(0.2)

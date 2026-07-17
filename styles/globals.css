@@ -1,5 +1,5 @@
 /* ===== AI World Monitor — Liquid-Glass Cinematic v8 ===== */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap');
+/* 使用系统字体（Google Fonts 国内被墙） */
 
 :root {
   --bg: #000;
@@ -8,8 +8,8 @@
   --text: #fff;
   --muted: rgba(255,255,255,0.55);
   --accent: rgba(255,255,255,0.9);
-  --font-heading: 'Instrument Serif', 'Georgia', serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: Georgia, 'Noto Serif CJK SC', 'STSong', 'SimSun', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; }

@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "下载地球贴图",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"Invoke-WebRequest 'https://unpkg.com/three-globe/example/img/earth-dark.jpg' -OutFile 'public/earth-dark.jpg'; Write-Host 'DOWNLOADED'\"",
+			"isBackground": false
+		}
+	]
+}
