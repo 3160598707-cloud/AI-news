@@ -36,8 +36,12 @@ jobs:
       - name: 📊 报告
         run: cat data/report.json 2>/dev/null || echo "无报告"
 
-      - name: � 发送 Web Push 通知
+      - name: 🔔 发送 Web Push 通知
         run: node scripts/send_push.js
+        env:
+          PUSH_WORKER_URL: ${{ secrets.PUSH_WORKER_URL }}
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
         continue-on-error: true
 
       - name: �📰 Commit & Push

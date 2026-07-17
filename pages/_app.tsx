@@ -12,11 +12,43 @@ export default function App({ Component, pageProps, router }: AppProps) {
   useEffect(() => {
     // Service Worker (Safari-compatible)
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.register('/AI-news/sw.js').catch(() => {});
     }
-    // Request notification permission
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
+
+    // Push 订阅 — 发送到 Cloudflare Worker
+    async function subscribePush() {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        let sub = await reg.pushManager.getSubscription();
+        if (sub) return; // 已订阅
+
+        // VAPID 公钥 (与 Worker 环境变量一致)
+        const vapidPublic = 'BElNpGQpXoMhVhXHqJkRnYsTtWwZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz012345';
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidPublic),
+        });
+
+        // 发送到 Worker
+        const workerUrl = 'https://ai-monitor-push.YOUR-SUBDOMAIN.workers.dev';
+        await fetch(workerUrl + '/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sub),
+        });
+        console.log('✅ Push 订阅成功');
+      } catch (e) {
+        console.log('Push 订阅跳过:', e.message);
+      }
+    }
+
+    if ('Notification' in window && Notification.permission === 'granted') {
+      subscribePush();
+    } else if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().then(p => {
+        if (p === 'granted') subscribePush();
+      });
     }
   }, []);
 
@@ -45,4 +77,12 @@ export default function App({ Component, pageProps, router }: AppProps) {
       </Layout>
     </>
   );
+}
+
+// Web Push 辅助: URL-safe Base64 → Uint8Array
+function urlBase64ToUint8Array(base64: string) {
+  const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+  const b64 = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(b64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
 }

@@ -1,0 +1,7 @@
+name = "ai-monitor-push"
+main = "worker.js"
+compatibility_date = "2025-07-18"
+
+[[kv_namespaces]]
+binding = "PUSH_STORE"
+id = "PUSH_STORE_PLACEHOLDER"
