@@ -1,6 +1,5 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import Script from 'next/script';
 import { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Layout from '../components/Layout';
@@ -66,8 +65,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <link rel="manifest" href="/AI-news/manifest.json" />
         <link rel="apple-touch-icon" href="/AI-news/icon-192.svg" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>" />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var o=window.fetch;window.fetch=function(u,p){if(typeof u==='string'){var i=u.indexOf('/api/');if(i>=0){var q=u.indexOf('?');var a=q>=0?u.substring(0,q):u;if(!a.match(/\\.json$/)){u=a+'.json'+(q>=0?u.substring(q):'')}if(p&&p.method==='POST'){p=Object.assign({},p,{method:'GET'})}}}return o.call(window,u,p)}})()` }} />
       </Head>
-      <Script src="/AI-news/api-proxy.js" strategy="beforeInteractive" />
       <Layout>
         <CursorGlow />
         <ParticleBackground />
