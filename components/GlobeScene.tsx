@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
+import * as THREE from 'three';
 
 interface EventItem {
   id: string; city: string; country: string;
@@ -129,13 +130,10 @@ export default function GlobeScene() {
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
           .showGraticules(true)
           .globeMaterial({
-            color: 0x889999,
-            emissive: 0x111111,
             roughness: 0.55,
             metalness: 0.06,
             bumpScale: 0.04,
-            opacity: 0.95,
-          })
+          } as any)
           // 蓝色薄大气层
           .atmosphereColor('#0d1a30')
           .atmosphereAltitude(0.25)
@@ -195,22 +193,31 @@ export default function GlobeScene() {
           if (renderer) renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         } catch {}
 
-        // 云层 + Rim Light
+        // Three.js 增强：灯光 + 大气Shader + 粒子飞线
         try {
           const scene = (globe as any).scene();
           if (scene) {
-            // 通过 globe 内建的 Three.js 获取
-            const anyTHREE = (globe as any)._three || (window as any).THREE;
-            if (anyTHREE) {
-              // 增加环境光 + 侧光
-              if (typeof anyTHREE.AmbientLight === 'function') {
-                scene.add(new anyTHREE.AmbientLight(0x223344, 0.6));
-                const rim = new anyTHREE.DirectionalLight(0x335577, 0.5);
-                rim.position.set(-2, 1, -1); scene.add(rim);
-              }
-            }
+            scene.add(new THREE.AmbientLight(0x1a2a3a, 0.7));
+            const d1 = new THREE.DirectionalLight(0x335577, 1.0); d1.position.set(3,1,2); scene.add(d1);
+            const d2 = new THREE.DirectionalLight(0x224466, 0.5); d2.position.set(-2,-0.5,-1); scene.add(d2);
+            // 大气光晕
+            const ag = new THREE.SphereGeometry(1.08, 64, 64);
+            const am = new THREE.ShaderMaterial({
+              vertexShader:`varying vec3 vN;void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+              fragmentShader:`varying vec3 vN;void main(){float i=pow(0.65-dot(vN,vec3(0,0,1)),3.);gl_FragColor=vec4(0.08,0.15,0.28,i*0.5);}`,
+              transparent:true,depthWrite:false,side:THREE.FrontSide,
+            });
+            scene.add(new THREE.Mesh(ag,am));
+            // 粒子飞线
+            const cnt=Math.min(arcs.length*3,30);
+            const fp=new Float32Array(cnt*3);
+            const fg=new THREE.BufferGeometry();fg.setAttribute('position',new THREE.BufferAttribute(fp,3));
+            const fdata=arcs.slice(0,cnt).map((a:any,i:number)=>({a,t:Math.random()}));
+            const fpt=new THREE.Points(fg,new THREE.PointsMaterial({size:0.008,color:0x4488cc,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.7}));
+            scene.add(fpt);
+            const af=()=>{for(let i=0;i<cnt&&i<fdata.length;i++){const f=fdata[i];f.t+=0.002;if(f.t>1)f.t=0;const a=f.a;const phi=(90-(a.startLat+(a.endLat-a.startLat)*f.t))*Math.PI/180;const theta=(a.startLng+(a.endLng-a.startLng)*f.t)*Math.PI/180;const alt=1.02+Math.sin(f.t*Math.PI)*0.15;fp[i*3]=alt*Math.sin(phi)*Math.cos(theta);fp[i*3+1]=alt*Math.cos(phi);fp[i*3+2]=alt*Math.sin(phi)*Math.sin(theta)}fg.attributes.position.needsUpdate=true;requestAnimationFrame(af)};af();
           }
-        } catch {}
+        } catch(e){console.warn('3D enhance:',(e as Error).message)}
 
         globeRef.current = globe;
         setGlobeStatus('ready');

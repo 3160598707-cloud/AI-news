@@ -9,6 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@types/three": "^0.185.1",
     "framer-motion": "^12.42.2",
     "globe.gl": "^2.46.1",
     "next": "^16.2.0",
