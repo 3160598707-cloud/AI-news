@@ -4,8 +4,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: '*/30 * * * *'  # 每30分钟更新
 
 permissions:
   contents: write

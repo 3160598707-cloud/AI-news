@@ -5,7 +5,7 @@ import { addEvent, getEvents } from '../../lib/eventsStore'
 
 const FEED_TIMEOUT_MS = 8000
 
-// ===== 全球 40+ 权威 RSS 新闻源 =====
+// ===== 全球 55+ 权威 RSS 新闻源 =====
 const feeds = [
   // === 中国 ===
   { url: 'https://rsshub.app/xinhua/whxw', country: '中国', cat: '政治' },
@@ -21,6 +21,10 @@ const feeds = [
   { url: 'https://www.straitstimes.com/news/asia/rss.xml', country: '新加坡', cat: '政治' },
   { url: 'https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms', country: '印度', cat: '政治' },
   { url: 'https://www.bangkokpost.com/rss/news.xml', country: '泰国', cat: '政治' },
+  { url: 'https://www.thejakartapost.com/rss.xml', country: '印度尼西亚', cat: '政治' },
+  { url: 'https://vnexpress.net/rss/tin-moi-nhat.rss', country: '越南', cat: '政治' },
+  { url: 'https://www.dawn.com/feeds/home', country: '巴基斯坦', cat: '政治' },
+  { url: 'https://www.philstar.com/rss/headlines', country: '菲律宾', cat: '政治' },
   // === 欧洲 ===
   { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', country: '英国', cat: '政治' },
   { url: 'https://www.theguardian.com/world/rss', country: '英国', cat: '政治' },
@@ -29,24 +33,40 @@ const feeds = [
   { url: 'https://feeds.reuters.com/reuters/worldNews', country: '英国', cat: '政治' },
   { url: 'https://www.lemonde.fr/en/rss/une.xml', country: '法国', cat: '政治' },
   { url: 'https://www.ansa.it/english/english_rss.xml', country: '意大利', cat: '政治' },
+  { url: 'https://tass.com/rss/v2.xml', country: '俄罗斯', cat: '政治' },
+  { url: 'https://www.dailysabah.com/rssFeed/10', country: '土耳其', cat: '政治' },
   // === 美洲 ===
   { url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml', country: '美国', cat: '政治' },
   { url: 'https://feeds.npr.org/1001/rss.xml', country: '美国', cat: '政治' },
   { url: 'https://www.cbc.ca/cmlink/rss-world', country: '加拿大', cat: '政治' },
+  { url: 'https://www1.folha.uol.com.br/emcimadahora/rss091.xml', country: '巴西', cat: '政治' },
+  { url: 'https://www.eluniversal.com.mx/rss.xml', country: '墨西哥', cat: '政治' },
+  // === 大洋洲 ===
+  { url: 'https://www.abc.net.au/news/feed/51120/rss.xml', country: '澳大利亚', cat: '政治' },
   // === 中东 ===
   { url: 'https://www.aljazeera.com/xml/rss/all.xml', country: '卡塔尔', cat: '政治' },
   { url: 'https://www.jpost.com/Rss/RssFeedsHeadlines.aspx', country: '以色列', cat: '政治' },
   { url: 'https://www.arabnews.com/rss.xml', country: '沙特阿拉伯', cat: '政治' },
+  { url: 'https://www.tehrantimes.com/rss', country: '伊朗', cat: '政治' },
   // === 非洲 ===
   { url: 'https://allafrica.com/tools/headlines/rss.xml', country: '非洲', cat: '政治' },
+  { url: 'https://www.news24.com/rss', country: '南非', cat: '政治' },
+  { url: 'https://www.vanguardngr.com/feed/', country: '尼日利亚', cat: '政治' },
   // === 商业/财经 ===
   { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100727362', country: '美国', cat: '商业' },
   { url: 'https://www.ft.com/rss/home/uk', country: '英国', cat: '商业' },
+  { url: 'https://feeds.bloomberg.com/markets/news.rss', country: '美国', cat: '商业' },
   // === 科技 ===
   { url: 'https://feeds.feedburner.com/TechCrunch/', country: '美国', cat: '科技' },
   { url: 'https://www.wired.com/feed/rss', country: '美国', cat: '科技' },
   { url: 'https://www.theverge.com/rss/index.xml', country: '美国', cat: '科技' },
   { url: 'https://feeds.arstechnica.com/arstechnica/index', country: '美国', cat: '科技' },
+  { url: 'https://www.theregister.com/headlines.atom', country: '英国', cat: '科技' },
+  // === AI 专业源 ===
+  { url: 'https://www.technologyreview.com/feed/', country: '美国', cat: '科技' },
+  { url: 'https://www.artificialintelligence-news.com/feed/', country: '英国', cat: '科技' },
+  { url: 'https://venturebeat.com/feed/', country: '美国', cat: '科技' },
+  { url: 'https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml', country: '美国', cat: '科技' },
   // === 能源/气候 ===
   { url: 'https://www.bbc.com/news/science_and_environment/rss.xml', country: '英国', cat: '能源' },
 ]
