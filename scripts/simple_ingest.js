@@ -181,10 +181,11 @@ async function main() {
         const xml = await fetchUrl(feed.url);
         if (!xml) return [];
         const items = parseRSS(xml, { country: feed.country, cat: feed.cat });
+        const host = (() => { try { return new URL(feed.url).hostname; } catch { return feed.url; } })();
         if (items.length > 0) {
-          console.log(`  ✅ ${feed.country} [${feed.cat}]: ${items.length} 条 — ${new URL(feed.url).hostname}`);
+          console.log(`  ✅ ${feed.country} [${feed.cat}]: ${items.length} 条 — ${host}`);
         } else {
-          console.log(`  ⚠️ ${feed.country} [${feed.cat}]: 0 条 — ${new URL(feed.url).hostname}`);
+          console.log(`  ⚠️ ${feed.country} [${feed.cat}]: 0 条 — ${host}`);
         }
         return items;
       } catch (e) {
@@ -227,8 +228,12 @@ async function main() {
   });
 
   // 保存
-  fs.writeFileSync(DATA_FILE, JSON.stringify(events, null, 2), 'utf-8');
-  console.log(`💾 已保存 ${events.length} 条事件到 data/events.json`);
+  if (events.length > 0) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(events, null, 2), 'utf-8');
+    console.log(`💾 已保存 ${events.length} 条事件到 data/events.json`);
+  } else {
+    console.log('⚠️ 没有抓到新事件，保留原有数据');
+  }
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+main().catch(e => { console.error('❌ 新闻抓取出错:', e.message); });

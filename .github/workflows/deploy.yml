@@ -25,6 +25,7 @@ jobs:
 
       - name: 🧪 生成静态 API 数据
         run: node scripts/gen_static_api.js
+        continue-on-error: true
 
       - name: 🏗️ 构建网站
         run: |
@@ -32,14 +33,16 @@ jobs:
           npm run build
 
       - name: 📤 部署到 GitHub Pages
+        if: success()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
           publish_branch: gh-pages
-          commit_message: '🚀 自动部署 [skip ci]'
+          commit_message: '🚀 自动部署'
 
       - name: 💾 保存新闻数据
+        if: always()
         run: |
           git config user.name "bot"
           git config user.email "bot@ai.local"
