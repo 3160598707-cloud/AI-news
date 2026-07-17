@@ -74,13 +74,29 @@ export default function GlobeScene() {
         setSelected(evs[0]);
 
         const el = globeEl.current!;
+
+        // 星空背景
+        const starCanvas = document.createElement('canvas');
+        starCanvas.width = el.clientWidth; starCanvas.height = el.clientHeight;
+        starCanvas.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none';
+        const sctx = starCanvas.getContext('2d')!;
+        sctx.fillStyle = '#03050b'; sctx.fillRect(0, 0, starCanvas.width, starCanvas.height);
+        for (let i = 0; i < 250; i++) {
+          const sx = Math.random() * starCanvas.width, sy = Math.random() * starCanvas.height;
+          const sr = Math.random() * 1.1 + 0.2;
+          sctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.5 + 0.15})`;
+          sctx.beginPath(); sctx.arc(sx, sy, sr, 0, Math.PI * 2); sctx.fill();
+        }
+        el.appendChild(starCanvas);
+
         const globe = new Globe(el)
           .width(el.clientWidth)
           .height(el.clientHeight)
-          .backgroundColor('#000000')
-          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-          .atmosphereColor('#111')
-          .atmosphereAltitude(0.2)
+          .backgroundColor('rgba(0,0,0,0)')
+          .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+          .globeMaterial({ color: 0xcccccc, emissive: 0x111111, roughness: 0.5, metalness: 0.05, opacity: 0.9, transparent: true } as any)
+          .atmosphereColor('#2a2a33')
+          .atmosphereAltitude(0.22)
           // Arc lines between same-category events
           .arcsData(buildArcs(evs))
           .arcColor((d: any) => d.color)
