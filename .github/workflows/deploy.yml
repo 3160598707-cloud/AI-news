@@ -1,0 +1,47 @@
+name: 🚀 自动部署
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 */4 * * *'  # 每4小时自动刷新新闻
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+
+      - name: 📡 抓取全球 RSS 新闻
+        run: node scripts/simple_ingest.js
+        continue-on-error: true
+
+      - name: 🧪 生成静态 API 数据
+        run: node scripts/gen_static_api.js
+
+      - name: 🏗️ 构建网站
+        run: |
+          npm ci
+          npm run build
+
+      - name: 📤 部署到 GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          publish_branch: gh-pages
+          commit_message: '🚀 自动部署 [skip ci]'
+
+      - name: 💾 保存新闻数据
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@ai.local"
+          git add data/events.json public/api/ -f
+          git diff --staged --quiet || (git commit -m "📰 新闻更新" && git push)
