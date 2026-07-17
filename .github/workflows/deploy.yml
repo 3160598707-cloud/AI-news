@@ -3,8 +3,6 @@ name: 🚀 自动部署
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '0 */4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -24,20 +22,15 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
 
-      - name: 📡 抓取全球 RSS 新闻
-        run: node scripts/simple_ingest.js
-        continue-on-error: true
-
       - name: 🧪 生成静态 API 数据
         run: node scripts/gen_static_api.js
-        continue-on-error: true
 
       - name: 🏗️ 构建网站
         run: |
           npm ci
           npm run build
 
-      - name: 📤 上传到 GitHub Pages
+      - name: 📤 上传
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
@@ -45,11 +38,3 @@ jobs:
       - name: 🚀 部署
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: 💾 保存新闻数据
-        if: always()
-        run: |
-          git config user.name "bot"
-          git config user.email "bot@ai.local"
-          git add data/events.json public/api/ -f
-          git diff --staged --quiet || (git commit -m "📰 新闻更新 [skip ci]" && git push)

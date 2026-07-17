@@ -1,4 +1,7 @@
-name: 📰 新闻自动抓取
+const fs = require('fs');
+const path = require('path');
+
+const yml = `name: 📰 新闻自动抓取
 
 on:
   schedule:
@@ -26,3 +29,7 @@ jobs:
           git config user.email bot@ai.local
           git add data/events.json public/api/ -f
           git diff --cached --quiet || (git commit -m "新闻更新 [skip ci]" && git push)
+`;
+
+fs.writeFileSync(path.join(__dirname, '..', '.github', 'workflows', 'daily-ingest.yml'), yml);
+console.log('done');
