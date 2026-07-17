@@ -25,14 +25,9 @@ jobs:
           npm ci
           npm run build
 
-      - name: 📤 推送到 gh-pages
-        run: |
-          cd out
-          touch .nojekyll
-          git init
-          git checkout -b gh-pages
-          git add -A
-          git config user.name "bot"
-          git config user.email "bot@ai.local"
-          git commit -m "🚀 自动部署"
-          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages:gh-pages
+      - name: 📤 部署
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          publish_branch: gh-pages
