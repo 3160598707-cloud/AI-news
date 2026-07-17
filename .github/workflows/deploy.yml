@@ -4,15 +4,20 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 */4 * * *'  # 每4小时自动刷新新闻
+    - cron: '0 */4 * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,14 +37,14 @@ jobs:
           npm ci
           npm run build
 
-      - name: 📤 部署到 GitHub Pages
-        if: success()
-        uses: peaceiris/actions-gh-pages@v4
+      - name: 📤 上传到 GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
-          publish_branch: gh-pages
-          commit_message: '🚀 自动部署'
+          path: ./out
+
+      - name: 🚀 部署
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: 💾 保存新闻数据
         if: always()
@@ -47,4 +52,4 @@ jobs:
           git config user.name "bot"
           git config user.email "bot@ai.local"
           git add data/events.json public/api/ -f
-          git diff --staged --quiet || (git commit -m "📰 新闻更新" && git push)
+          git diff --staged --quiet || (git commit -m "📰 新闻更新 [skip ci]" && git push)
