@@ -1,0 +1,24 @@
+{
+  "name": "AI World Intelligence Monitor",
+  "short_name": "AI Monitor",
+  "description": "私人全球 AI 情报助手 — 3D 地球可视化、AI 态势分析、日报生成",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050b14",
+  "theme_color": "#050b14",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
