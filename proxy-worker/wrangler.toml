@@ -1,0 +1,5 @@
+name = "ai-world-monitor"
+main = "worker.js"
+compatibility_date = "2025-07-17"
+
+# 免费计划：每天10万请求，足够用

@@ -1,0 +1,23 @@
+name: Deploy Cloudflare Worker Proxy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-proxy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Worker (temporary)
+        working-directory: proxy-worker
+        run: |
+          echo "n" | npx wrangler deploy --temporary 2>&1 | tee /tmp/deploy.log
+          # 提取 workers.dev URL
+          URL=$(grep -oP 'https://[a-zA-Z0-9-]+\.workers\.dev' /tmp/deploy.log || echo "")
+          if [ -n "$URL" ]; then
+            echo "PROXY_URL=$URL" >> $GITHUB_ENV
+            echo "✅ 国内可访问地址: $URL"
+          fi
