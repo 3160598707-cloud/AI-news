@@ -36,7 +36,11 @@ jobs:
       - name: 📊 报告
         run: cat data/report.json 2>/dev/null || echo "无报告"
 
-      - name: 📰 Commit & Push
+      - name: � 发送 Web Push 通知
+        run: node scripts/send_push.js
+        continue-on-error: true
+
+      - name: �📰 Commit & Push
         run: |
           git config user.name "ai-monitor-bot"
           git config user.email "bot@aimonitor.local"

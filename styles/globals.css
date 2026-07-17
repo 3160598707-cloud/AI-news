@@ -156,6 +156,7 @@ body::before {
   .mobile-nav-link.active { color: #fff; background: rgba(255,255,255,0.08); }
   .mobile-nav-icon { font-size: 0.7rem; }
   .main-content { padding-bottom: 4rem; }
+  .mobile-nav { padding-bottom: env(safe-area-inset-bottom, 0.4rem); }
 }
 
 /* ===== Home Fullscreen ===== */
