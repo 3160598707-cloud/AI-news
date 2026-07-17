@@ -125,17 +125,19 @@ export default function GlobeScene() {
         const globe = new Globe(el)
           .width(w)
           .height(h)
-          .backgroundColor('#0a1018')
+          .backgroundColor('rgba(0,0,0,0)')
           .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
           .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-          .showGraticules(true)
+          .showGraticules(false)
           .globeMaterial({
-            roughness: 0.5,
-            metalness: 0.05,
-            bumpScale: 0.03,
+            roughness: 0.6,
+            metalness: 0.03,
+            bumpScale: 0.02,
+            opacity: 0.88,
+            transparent: true,
           } as any)
-          .atmosphereColor('#0d1520')
-          .atmosphereAltitude(0.18)
+          .atmosphereColor('#0a0f18')
+          .atmosphereAltitude(0.15)
           // 弧线
           .arcsData(arcs)
           .arcColor((d: any) => {
@@ -192,15 +194,11 @@ export default function GlobeScene() {
           if (renderer) renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         } catch {}
 
-        // 灯光 + 白线网格球
+        // 基础环境光
         try {
           const scene = (globe as any).scene();
           if (scene) {
-            scene.add(new THREE.AmbientLight(0x222233, 0.6));
-            // 经纬网格球
-            const wg = new THREE.SphereGeometry(1.004, 36, 18);
-            const wm = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.1, depthTest: true });
-            scene.add(new THREE.Mesh(wg, wm));
+            scene.add(new THREE.AmbientLight(0x223344, 0.5));
           }
         } catch(e){}
 
@@ -214,18 +212,10 @@ export default function GlobeScene() {
             const countries = await geoRes.json();
             (globe as any)
               .polygonsData(countries.features)
-              .polygonCapColor((d: any) => {
-                const name = d.properties?.name || '';
-                const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(30,40,55,0.8)' : 'rgba(25,30,38,0.75)';
-              })
-              .polygonSideColor(() => 'rgba(20,25,32,0.7)')
-              .polygonStrokeColor((d: any) => {
-                const name = d.properties?.name || '';
-                const hasEvent = evs.some(e => (e.country||'').includes(name)||name.includes(e.country||''));
-                return hasEvent ? 'rgba(180,200,230,0.5)' : 'rgba(140,155,175,0.35)';
-              })
-              .polygonAltitude(0.005)
+              .polygonCapColor(() => 'rgba(8,10,15,0.85)')
+              .polygonSideColor(() => 'rgba(5,6,10,0.9)')
+              .polygonStrokeColor(() => 'rgba(180,190,200,0.35)')
+              .polygonAltitude(0.003)
               .polygonLabel((d: any) => {
                 const name = d.properties?.name || '';
                 const count = evs.filter(e => (e.country||'').includes(name)||name.includes(e.country||'')).length;
