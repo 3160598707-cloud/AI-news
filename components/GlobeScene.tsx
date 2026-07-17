@@ -113,19 +113,29 @@ export default function GlobeScene() {
 
         globeRef.current = globe;
 
-        // Load country polygon outlines
+        // 本地国界 + 国家名称/首都标签
         try {
-          const geoRes = await fetch('https://unpkg.com/three-globe/example/geo-data/ne_110m_admin_0_countries.geojson');
+          const geoRes = await fetch('/countries.geojson');
           if (geoRes.ok) {
             const countries = await geoRes.json();
             (globe as any)
               .polygonsData(countries.features)
-              .polygonCapColor(() => 'rgba(20,40,80,0.15)')
-              .polygonSideColor(() => 'rgba(30,50,90,0.08)')
-              .polygonStrokeColor(() => 'rgba(100,160,220,0.12)')
-              .polygonAltitude(0.001);
+              .polygonCapColor(() => 'rgba(0,0,0,0)')
+              .polygonSideColor(() => 'rgba(0,0,0,0)')
+              .polygonStrokeColor(() => 'rgba(255,255,255,0.2)')
+              .polygonAltitude(0.001)
+              .polygonLabel((d: any) => {
+                const name = d.properties?.name || '';
+                const count = evs.filter((e:any) => (e.country||'').includes(name)||name.includes(e.country||'')).length;
+                if (count > 0) {
+                  const ev = evs.find((e:any) => (e.country||'').includes(name)||name.includes(e.country||''));
+                  const city = ev?.city || '';
+                  return `<b>${name}</b>${city ? ' · '+city : ''}<br/><small>${count} 事件</small>`;
+                }
+                return name;
+              });
           }
-        } catch { /* GeoJSON unavailable — borders skipped gracefully */ }
+        } catch {}
 
         const handleResize = () => {
           if (globeEl.current) {
