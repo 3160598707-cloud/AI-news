@@ -38,8 +38,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
           body: JSON.stringify(sub),
         });
         console.log('✅ Push 订阅成功');
-      } catch (e) {
-        console.log('Push 订阅跳过:', e.message);
+      } catch (e: any) {
+        console.log('Push 订阅跳过:', e?.message || e);
       }
     }
 
