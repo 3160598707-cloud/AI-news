@@ -193,7 +193,7 @@ export default function GlobeScene() {
           if (renderer) renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         } catch {}
 
-        // Three.js 增强：灯光 + 大气Shader + 粒子飞线
+        // Three.js 增强：灯光 + 大气Shader + 粒子飞线 + 网格线球
         try {
           const scene = (globe as any).scene();
           if (scene) {
@@ -208,6 +208,10 @@ export default function GlobeScene() {
               transparent:true,depthWrite:false,side:THREE.FrontSide,
             });
             scene.add(new THREE.Mesh(ag,am));
+            // 经纬网格球 — 明显白线
+            const wg = new THREE.SphereGeometry(1.005, 36, 18);
+            const wm = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.12, depthTest: true });
+            scene.add(new THREE.Mesh(wg, wm));
             // 粒子飞线
             const cnt=Math.min(arcs.length*3,30);
             const fp=new Float32Array(cnt*3);
