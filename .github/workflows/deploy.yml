@@ -7,34 +7,32 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
 
-      - name: 🧪 生成静态 API 数据
+      - name: 🧪 生成静态 API
         run: node scripts/gen_static_api.js
 
-      - name: 🏗️ 构建网站
+      - name: 🏗️ 构建
         run: |
           npm ci
           npm run build
 
-      - name: 📤 上传
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out
-
-      - name: 🚀 部署
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: 📤 推送到 gh-pages
+        run: |
+          cd out
+          touch .nojekyll
+          git init
+          git checkout -b gh-pages
+          git add -A
+          git config user.name "bot"
+          git config user.email "bot@ai.local"
+          git commit -m "🚀 自动部署"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages:gh-pages
